@@ -1,33 +1,46 @@
-//Premiere scène
-export function createScene (engine, canvas) {
-    // This creates a basic Babylon Scene object (non-mesh)
-    var scene = new BABYLON.Scene(engine);
+// firstScene.js
+export function createScene(engine, canvas) {
+    const scene = new BABYLON.Scene(engine);
 
-    // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.ArcRotateCamera("arcR", -Math.PI/2, Math.PI/2, 15, BABYLON.Vector3.Zero(), scene);
-
-    // This attaches the camera to the canvas
+    // Camera
+    const camera = new BABYLON.ArcRotateCamera("arcR", -Math.PI / 2, Math.PI / 2, 15, BABYLON.Vector3.Zero(), scene);
     camera.attachControl(canvas, true);
-    const guiMenu = new BABYLON.GUI.GUI3DManager(scene);
-        guiMenu.idealHeight = 720; //fit our fullscreen ui to this height
 
-        //create a simple button
-        const startBtn = BABYLON.Button.CreateSimpleButton("start", "PLAY");
-        startBtn.width = 0.2
-        startBtn.height = "40px";
-        startBtn.color = "white";
-        startBtn.top = "-14px";
-        startBtn.thickness = 0;
-        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        guiMenu.addControl(startBtn);
+    // GUI 2D
+    const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-        //this handles interactions with the start button attached to the scene
-        startBtn.onPointerDownObservable.add(() => {
-            this._goToCutScene();
-            scene.detachControl(); //observables disabled
-        });
+    const startBtn = BABYLON.GUI.Button.CreateSimpleButton("start", "PLAY");
+    startBtn.width = "150px";
+    startBtn.height = "25px";
+    startBtn.color = "white";
+    startBtn.background = "green";
+    startBtn.cornerRadius = 10;
+    startBtn.thickness = 0;
+    startBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    startBtn.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+
+    advancedTexture.addControl(startBtn);
+
+    startBtn.onPointerDownObservable.add(() => {
+        console.log("Play button clicked!");
+    });
+
+    
+    const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+    BABYLON.SceneLoader.ImportMeshAsync(
+        null,           // meshNames : null pour tout importer
+        "/models/",      // chemin vers le dossier
+        "knight.glb",   // nom du fichier
+        scene           // <--- tu dois passer une vraie instance de BABYLON.Scene ici
+    ).then((result) => {
+        const knight = result.meshes[0];
+        knight.position.y = 2;
+    });
+    // BABYLON.SceneLoader.Append("/models/", "knight.glb", scene, function (scene) {
+    //     // Positionner le premier mesh ou la racine
+    //     const knight = scene.meshes[scene.meshes.length - 1];
+    //     knight.position = new BABYLON.Vector3(0, 2, 0);
+    // });
 
     return scene;
-  };
-  
-  
+}
