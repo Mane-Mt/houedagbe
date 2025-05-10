@@ -1,68 +1,54 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Chargement Minecraft Style</title>
-  <script src="https://cdn.babylonjs.com/babylon.js"></script>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100%;
-    }
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Contrail+One&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="/public/css/main.css">
+        <link rel="stylesheet" href="/public/css/menu.css">
+        <link rel="stylesheet" href="/public/css/lobby.css">
+        <link rel="stylesheet" href="/public/css/joinLobby.css">
+        <title>Games on web 2024</title>
 
-    body {
-      background: url('assets/freepik__a-cartoon-3d-village-by-studiob-in-the-style-of-un__73877.jpeg') no-repeat center  fixed; 
-      background-size: cover;
-      font-family: 'Courier New', monospace;
-    }
-
-    #loader {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: white;
-      font-size: 20px;
-      text-shadow: 1px 1px 2px black;
-    }
-
-    #progressBarContainer {
-      width: 300px;
-      height: 10px;
-      background: #555;
-      margin: 20px auto;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    #progressBar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(to right, limegreen, gray);
-    }
-
-    #renderCanvas {
-      width: 100%;
-      height: 100%;
-      display: none;
-    }
-  </style>
-</head>
-<body>
-  <div id="loader">
-    <div id="loadingText">HOUEDAGBE</div>
-    <div id="statusText">Growing...</div>
-    <div id="progressBarContainer">
-      <div id="progressBar"></div>
-    </div>
-  </div>
-
-  <canvas id="renderCanvas"></canvas>
-  <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
-  <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
-  <script type="module" src="src/app.js"></script>
-</body>
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <script src="https://cdn.babylonjs.com/babylon.max.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/materialsLibrary/babylonjs.materials.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/serializers/babylonjs.serializers.js"></script>
+        <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <script src="https://cdn.babylonjs.com/gui/babylon.gui.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/inspector/babylon.inspector.bundle.max.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/viewer/babylon.viewer.js"></script>
+        <script
+            src="https://cdn.babylonjs.com/viewer/babylon.viewer.max.js"></script>
+    </head>
+    <body>
+        <div id="ui"></div>
+        <script type="module" src="dist/core/main.js"></script>
+    </body>
 </html>

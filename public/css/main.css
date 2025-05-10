@@ -1,0 +1,561 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    font-family: "Contrail One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#info {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    text-shadow: black 1px 1px 1px;
+    z-index: 1000;
+
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 1vw;
+
+    top: 2px;
+    right: 25vw;
+}
+
+.info-icon {
+    width: 17px;
+    height: 17px;
+}
+
+#ping {
+    display: flex;
+    align-items: flex-start;
+    column-gap: 0.25vw;
+}
+
+#fps {
+    color: white;
+}
+
+.fade {
+    background-color: black;
+    z-index: 1001;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.message {
+    position: absolute;
+    width: 25vw;
+    height: 15vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../img/message-container.svg");
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fae69f;
+    font-size: 2vw;
+    text-shadow: #000 1px 1px 1px;
+    text-align: center;
+    animation: down 3.5s ease forwards;
+    padding-left: 3vw;
+    padding-right: 3vw;
+}
+
+@keyframes down {
+    0% {
+        top: -10vh;
+    }
+    25% {
+        top: 10vh;
+    }
+    75% {
+        top: 10vh;
+    }
+    100% {
+        top: -10vh;
+    }
+}
+
+.error-message {
+    color: red;
+}
+
+.info-message {
+    color: #fae69f;
+}
+
+.success-message {
+    color: green;
+}
+
+.spinner {
+    position: absolute;
+    bottom: -4vh;
+    left: 50%;
+    width: 20vw;
+    height: 20vw;
+    transform: translate(-50%, 0);
+    background-image: url("../img/spinner.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.presentation-img {
+    position: absolute;
+    width: 60vw;
+    height: 55vh;
+    top: 14vh;
+    left: 4vw;
+    border-radius: 20px;
+}
+
+#description-container {
+    position: absolute;
+    width: 60vw;
+    height: 12vw;
+    padding: 2vw;
+    bottom: 4vh;
+    left: 4vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    row-gap: 1vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    color: #fae69f;
+    text-shadow: #000 1px 1px 1px;
+    font-size: 1.3vw;
+    list-style: inside;
+}
+
+.description-title {
+    font-size: 2vw;
+    color: #FEB941;
+}
+
+#commands-container {
+    width: 27vw;
+    height: 32vw;
+    background-image: url("../img/stone-container.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    top: 14vh;
+    right: 4vw;
+    display: flex;
+    flex-direction: column;
+    row-gap: 4vh;
+    padding: 3vw;
+    font-size: 2.2vw;
+    color: #fae69f;
+    text-shadow: #000 2px 2px 1px;
+}
+
+.command {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    align-items: center;
+    column-gap: 1vw;
+}
+
+.key-img {
+    width: 3.2vw;
+    height: 3.2vw;
+}
+
+.large-key-img {
+    width: 6vw;
+    height: 3.5vw;
+}
+
+.large-button-img {
+    width: 5vw;
+    height: 5vw;
+}
+
+#checkbox-container {
+    width: 30vw;
+    height: 21vh;
+    max-width: 30vw;
+    position: absolute;
+    bottom: 2vh;
+    right: 2.5vw;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 1vw;
+    row-gap: 1vh;
+}
+
+.player-checkbox {
+    position: relative;
+    height: 10vh;
+    font-size: 1.25vw;
+    color: #fae69f;
+    text-shadow: #000 1px 1px 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.checkbox-img {
+    width: 4vw;
+    height: 4vw;
+}
+
+#checkbox-info-text {
+    position: absolute;
+    bottom: 24vh;
+    right: 3vw;
+    transform: translateX(-50%);
+    font-size: 1.6vw;
+    color: #276e69;
+    text-shadow: #000 1px 1px 1px;
+}
+
+.msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 3vw;
+    text-shadow: #000 3px 3px 1px;
+}
+
+#game-timer {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 0.25vw;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    text-shadow: #000 1px 1px 1px;
+    font-size: 2.5vw;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 0.5vw;
+    border-radius: 20px;
+}
+
+#stopwatch-img {
+    width: 2.7vw;
+    height: 2.7vw;
+}
+
+#score-container {
+    position: absolute;
+    font-size: 3vw;
+    color: #fae69f;
+    background-image: url("../img/stone-circle.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    text-shadow: #000 1px 1px 1px;
+    top: .4vh;
+    left: .2vw;
+    width: 10vw;
+    height: 9vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 1.7vw;
+}
+
+#results-div {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 3vw;
+    text-shadow: #000 3px 3px 1px;
+}
+
+#final-results-div {
+    position: absolute;
+    top: 17%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #fff;
+    font-size: 1.8vw;
+    text-shadow: #000 3px 3px 1px;
+}
+
+#player-scores-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    background-image: url("../img/big-leaf-stone-container.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 60vw;
+    height: 78vh;
+    padding-top: 13vh;
+    padding-left: 6vw;
+    row-gap: .1vh;
+}
+
+.player-score {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.medals {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    font-size: 1.7vw;
+    color: #fae69f;
+    text-shadow: #000 1px 1px 1px;
+    min-width: 40vw;
+    padding-left: 1vw;
+    padding-right: 1vw;
+}
+
+.medal-img {
+    width: 3.2vw;
+    height: 3.2vw;
+}
+
+.vertical-div {
+    width: .25vw;
+    height: 5vh;
+    background-color: #d7955c;
+    margin-left: 1.7vw;
+    margin-right: 1.7vw;
+}
+
+.medal-name-container {
+    width: 10vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.medal-name {
+    font-size: 1.8vw;
+    color: #fae69f;
+}
+
+.medal-result {
+    font-size: 1.8vw;
+    color: #fae69f;
+}
+
+.position {
+    width: 3vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vw;
+    color: #FEB941;
+    text-shadow: #000 2px 2px 1px;
+}
+
+/* CHARACTER CUSTOMIZATION */
+
+.next-button {
+    position: absolute;
+    top: 45vh;
+    width: 3vw;
+    height: 4.5vh;
+    border: none;
+    background-color: transparent;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../img/stone-arrow.svg");
+    cursor: pointer;
+    transition: scale .15s ease;
+    outline: none;
+}
+
+.left-next-button {
+    right: 43vw;
+    transform: rotate(90deg);
+}
+
+.left-next-button:hover {
+    transform: rotate(90deg) scale(.95);
+}
+
+.left-next-button:active {
+    transform: rotate(90deg) scale(.9);
+}
+
+.right-next-button {
+    right: 23vw;
+    transform: rotate(-90deg);
+}
+
+.right-next-button:hover {
+    transform: rotate(-90deg) scale(.95);
+}
+
+.right-next-button:active {
+    transform: rotate(-90deg) scale(.9);
+}
+
+#customization-container {
+    position: absolute;
+    top: 20vh;
+    left: 20vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 4vh;
+}
+
+#categories-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    column-gap: 1vw;
+}
+
+#color-options-div {
+    background-image: url("../img/stone-container.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 21vw;
+    height: 26vw;
+    display: flex;
+    flex-flow: row wrap;
+    row-gap: 3vh;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    padding: 2vw;
+    column-gap: 2vw;
+}
+
+.color-button {
+    width: 4vw;
+    height: 4vw;
+    cursor: pointer;
+    transition: scale .15s ease;
+    outline: none;
+    border-radius: 100%;
+    border: .14vw solid black;
+}
+
+.color-button:hover {
+    transform: scale(1.1);
+}
+
+.color-button:active {
+    transform: scale(1);
+}
+
+.color-button-selected {
+    border: .14vw solid blue;
+}
+
+/* TRACK AND FIELD */
+
+#position-div {
+    width: 9vw;
+    height: 9vw;
+    position: absolute;
+    top: .2vh;
+    left: .5vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../img/stone-circle.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #fae69f;
+    text-shadow: #000 1px 1px 1px;
+    font-size: 2.8vw;
+    padding-left: 1.5vw;
+}
+
+#speed-container {
+    position: absolute;
+    width: 17vw;
+    height: 11vh;
+    bottom: 2vh;
+    left: 1.5vw;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-image: url("../img/large-stone-button.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    padding-left: 1.3vw;
+}
+
+#speed-div {
+    max-width: 14vw;
+    width: .1vw;
+    height: 6vh;
+    border-radius: 10px;
+    border: .1vw solid black;
+    opacity: .7;
+}
+
+.high-speed {
+    background-color: #C40C0C;
+}
+
+.low-speed {
+    background-color: #0CC40C;
+}
+
+.medium-speed {
+    background-color: #C4C40C;
+}

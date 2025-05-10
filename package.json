@@ -1,0 +1,30 @@
+{
+  "name": "houedagbe",
+  "version": "1.0.0",
+  "main": "methode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && tsc-alias"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mane-Mt/houedagbe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mane-Mt/houedagbe/issues"
+  },
+  "homepage": "https://github.com/Mane-Mt/houedagbe#readme",
+  "description": "",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^8.6.1",
+    "babylonjs": "^8.6.1",
+    "peerjs": "^1.5.4",
+    "uuid": "^11.1.0"
+  }
+}

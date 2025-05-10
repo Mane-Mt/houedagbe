@@ -1,33 +1,35 @@
 //Premiere scène
-export function createScene (engine, canvas) {
-    // This creates a basic Babylon Scene object (non-mesh)
-    var scene = new BABYLON.Scene(engine);
+export function goStart(engine, canvas) {
+  var scene = new BABYLON.Scene(engine);
+  const camera = new BABYLON.FreeCamera(
+    "camera1",
+    new BABYLON.Vector3(0, 5, -10),
+    scene
+  );
+  // Targets the camera to scene origin
+  camera.setTarget(BABYLON.Vector3.Zero());
+  // Attaches the camera to the canvas
+  camera.attachControl(canvas, true);
 
-    // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.ArcRotateCamera("arcR", -Math.PI/2, Math.PI/2, 15, BABYLON.Vector3.Zero(), scene);
+  (async () => {
+    const audioEngine = await BABYLON.CreateAudioEngineAsync();
+    const narration = await BABYLON.CreateStreamingSoundAsync(
+      "narration",
+      "assets/sounds/copycat(revised).mp3"
+    );
+    // Wait for the audio engine to unlock
+    await audioEngine.unlockAsync();
+    narration.play();
+  })();
 
-    // This attaches the camera to the canvas
-    camera.attachControl(canvas, true);
-    const guiMenu = new BABYLON.GUI.GUI3DManager(scene);
-        guiMenu.idealHeight = 720; //fit our fullscreen ui to this height
 
-        //create a simple button
-        const startBtn = BABYLON.Button.CreateSimpleButton("start", "PLAY");
-        startBtn.width = 0.2
-        startBtn.height = "40px";
-        startBtn.color = "white";
-        startBtn.top = "-14px";
-        startBtn.thickness = 0;
-        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        guiMenu.addControl(startBtn);
+  var guiMenu = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+  let logo = new BABYLON.GUI.Image(
+    "spacePirates",
+    "assets/UI/houedagbeLogo.png"
+  );
 
-        //this handles interactions with the start button attached to the scene
-        startBtn.onPointerDownObservable.add(() => {
-            this._goToCutScene();
-            scene.detachControl(); //observables disabled
-        });
-
-    return scene;
-  };
-  
-  
+  logo.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+  guiMenu.addControl(logo);
+  return scene;
+}
