@@ -60,7 +60,7 @@ export class SettingsScene extends Scene {
     }
     _createHelpButton(buttonContainer) {
         const hostBtn = document.createElement("button");
-        hostBtn.innerHTML = "Aide";
+        hostBtn.innerHTML = "Help";
         hostBtn.className = "stone-button";
         buttonContainer.appendChild(hostBtn);
         // host image
@@ -72,7 +72,7 @@ export class SettingsScene extends Scene {
             // this.game.soundManager.playSound("click");
             // this.game.networkInstance = new NetworkHost(this.game.peer, name);
             // this.game.networkInputManager = new NetworkInputManager();
-            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "help"));
+            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "parameters"));
         };
         // hostBtn.onmouseenter = (): void => {
         //     this.game.soundManager.playSound("select");

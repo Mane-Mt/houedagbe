@@ -2,6 +2,7 @@ import { Scene } from "./Scene";
 import { StartScene } from "../scenes/StartScene";
 import { MenuScene } from "../scenes/MenuScene";
 import { SettingsScene } from "../scenes/SettingsScene";
+import { GameScene } from "../scenes/GameScene";
 
 export class SceneManager {
     private static instance: SceneManager;
@@ -40,6 +41,8 @@ export class SceneManager {
                 return new MenuScene();
             case "settings":
                 return  new SettingsScene();
+            case "game":
+                return new GameScene();
             default:
                 throw new Error("Scene not found");
         }

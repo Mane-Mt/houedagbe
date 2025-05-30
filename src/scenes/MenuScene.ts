@@ -105,11 +105,7 @@ export class MenuScene extends Scene {
         joinBtn.appendChild(joinImg);
 
         joinBtn.onclick = (): void => {
-            // this.game.soundManager.playSound("click");
-            // if (!this._checkName()) return;
-            // this.game.networkInstance = new NetworkClient(this.game.peer, name);
-            // this.game.networkInputManager = new NetworkInputManager();
-           
+            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "game"));
         }
 
         // joinBtn.onmouseenter = (): void => {

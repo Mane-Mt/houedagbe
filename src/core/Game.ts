@@ -2,12 +2,12 @@ import * as BABYLON from "@babylonjs/core";
 import { LoadingScreen } from "./LoadingScreen";
 import { SceneManager } from "./SceneManager";
 
+
 export class Game {
     private static instance: Game;
     public canvas!: HTMLCanvasElement;
     public engine!: BABYLON.Engine;
     public readonly uiContainer: Element = document.querySelector("#ui")!;
-    private _infoDiv!: HTMLDivElement;
 
 
     public constructor() {

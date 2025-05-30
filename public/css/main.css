@@ -559,3 +559,22 @@
 .medium-speed {
     background-color: #C4C40C;
 }
+
+ #controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  #controls button {
+    padding: 8px 12px;
+    background-color: #222;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
