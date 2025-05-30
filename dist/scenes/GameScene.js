@@ -1,5 +1,3 @@
-import { CameraAnimation } from "../core/components/CameraAnimation.js";
-import { CameraComponent } from "../core/components/CameraComponent.js";
 import { Entity } from "../core/Entity.js";
 import { Scene } from "../core/Scene.js";
 const PITCH_WIDTH = 40;
@@ -11,113 +9,142 @@ export class GameScene extends Scene {
     async preload() {
         this.game.engine.displayLoadingUI();
         // load assets
-        this.loadedAssets["caveman"] = await BABYLON.SceneLoader.LoadAssetContainerAsync("public/meshes/models/", "caveman.glb", this.babylonScene);
-        this.loadedAssets["cavewoman"] = await BABYLON.SceneLoader.LoadAssetContainerAsync("public/meshes/models/", "cavewoman.glb", this.babylonScene);
-        this.loadedAssets["footballPitch"] = await BABYLON.SceneLoader.LoadAssetContainerAsync("public/meshes/", "ruins_of_hore_abbey.glb", this.babylonScene);
-        this.loadedAssets["ball"] = await BABYLON.SceneLoader.LoadAssetContainerAsync("public/meshes/models/", "ball.glb", this.babylonScene);
         this.game.engine.hideLoadingUI();
     }
     start() {
-        // this.enablePhysics(new BABYLON.Vector3(0, -9.81, 0));
-        // // camera
-        // this.mainCamera.position = new BABYLON.Vector3(0, 11, -15);
-        // // skybox
-        // const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 1000.0 }, this.babylonScene);
-        // const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", this.babylonScene);
-        // skyboxMaterial.backFaceCulling = false;
-        // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("img/skybox", this.babylonScene);
-        // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-        // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-        // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-        // skybox.material = skyboxMaterial;
-        // // start animation
-        // const cameraEntity = new Entity();
-        // const camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(-20, 3, -10), this.babylonScene);
-        // cameraEntity.addComponent(new CameraComponent(cameraEntity, this, { camera: camera }));
-        // cameraEntity.addComponent(new CameraAnimation(cameraEntity, this));
-        // this.entityManager.addEntity(cameraEntity);
-        // // light
-        // const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), this.babylonScene);
-        // light.intensity = 0.7;
-        // this._createFootballPitch();
-        // const mainCameraEntity = new Entity("camera");
-        // mainCameraEntity.addComponent(new CameraComponent(mainCameraEntity, this, { camera: this.mainCamera }));
-        // this.entityManager.addEntity(mainCameraEntity);
-        // this._gameDiv = document.createElement("div");
-        // this._gameDiv.id = "controls";
-        // this._gameDiv.className = "";
-        // this.game.uiContainer.appendChild(this._gameDiv);
-        // const elementsDiv = document.createElement("div");
-        // elementsDiv.id = "elements-div";
+        const light = new BABYLON.HemisphericLight('lighsa', new BABYLON.Vector3(0, 10, 0), this.babylonScene);
+                
+        let originalTree = null;
 
+        BABYLON.SceneLoader.ImportMesh("", "../../public/", "pine_tree.glb", this.babylonScene, (meshes) => {
+            const root = new BABYLON.TransformNode("treeRoot", this.babylonScene);
+            meshes.forEach(mesh => mesh.parent = root);
 
-        const light = new BABYLON.HemisphericLight('lighsa', new BABYLON.Vector3(0,10,0), this.babylonScene)
-        BABYLON.SceneLoader.ImportMesh(
-            "",                           
-            "../../public/",                 
-            "pine_tree.glb",                 
-            this.babylonScene,           
-            (meshes) => {
-                const tree = meshes[0];    
-                tree.position = new BABYLON.Vector3(3, 0, 0); 
-                tree.scaling = new BABYLON.Vector3(2, 2, 2); 
-            }
-        );
+            root.position = new BABYLON.Vector3(3, 0, 0);
+            root.scaling = new BABYLON.Vector3(2, 2, 2);
+            root.setEnabled(false);
+
+            originalTree = root; 
+        });
+
         this._createGround(this.babylonScene);
-        const camaraContainer = new BABYLON.MeshBuilder.CreateGround('ground', { width: .5, height : .5}, this.babylonScene)
-        camaraContainer.position = new BABYLON.Vector3(0,15,0)
+        const camaraContainer = BABYLON.MeshBuilder.CreateGround('ground', { width: .5, height: .5 }, this.babylonScene);
+        camaraContainer.position = new BABYLON.Vector3(0, 10, 0);
         this.mainCamera.parent = camaraContainer;
-        this.mainCamera.setTarget( new BABYLON.Vector3(0,-10,0));
-
-
+        this.mainCamera.setTarget(new BABYLON.Vector3(0, -10, 0));
         let camVertical = 0;
         let camHorizontal = 0;
         window.addEventListener("keydown", e => {
-            const  theKey = e.key.toLowerCase();
-            if(theKey === "arrowup") camVertical =1;
-            if(theKey === "arrowdown") camVertical = -1;
-            if(theKey === "arrowleft") camHorizontal = -1;
-            if(theKey === "arrowright") camHorizontal = 1;
-            camaraContainer.locallyTranslate(new BABYLON.Vector3(camHorizontal,0, camVertical));
-        })
+            const theKey = e.key.toLowerCase();
+            if (theKey === "arrowup")
+                camVertical = 1;
+            if (theKey === "arrowdown")
+                camVertical = -1;
+            if (theKey === "arrowleft")
+                camHorizontal = -1;
+            if (theKey === "arrowright")
+                camHorizontal = 1;
+            camaraContainer.locallyTranslate(new BABYLON.Vector3(camHorizontal, 0, camVertical));
+        });
         window.addEventListener("keyup", e => {
-            const  theKey = e.key.toLowerCase();
-            if(theKey === "arrowup") camVertical =0;
-            if(theKey === "arrowdown") camVertical = 0;
-            if(theKey === "arrowleft") camHorizontal = 0;
-            if(theKey === "arrowright") camHorizontal = 0;
-        })
-        
+            const theKey = e.key.toLowerCase();
+            if (theKey === "arrowup")
+                camVertical = 0;
+            if (theKey === "arrowdown")
+                camVertical = 0;
+            if (theKey === "arrowleft")
+                camHorizontal = 0;
+            if (theKey === "arrowright")
+                camHorizontal = 0;
+        });
+
+        this._createAvatar(this.babylonScene);
+
+       window.addEventListener('click', () => {
+            const pickResult = this.babylonScene.pick(this.babylonScene.pointerX, this.babylonScene.pointerY);
+
+            if (pickResult.hit && originalTree) {
+                const point = pickResult.pickedPoint;
+
+                // Cloner l'arbre
+                const clone = originalTree.clone("treeClone_" + Date.now());
+                if (clone) {
+                    clone.position = point;
+                    clone.setEnabled(true); // Afficher le clone
+                    console.log("Arbre cloné à :", point);
+                }
+            }
+        });
+
+        // 1. Créer l'interface GUI
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        // 2. Créer un conteneur vertical à droite
+        const panel = new BABYLON.GUI.StackPanel();
+        panel.width = "150px";
+        panel.isVertical = true;
+        panel.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        advancedTexture.addControl(panel);
+    
+        // 4. Ajouter les boutons avec leurs actions
+        panel.addControl(this._createButton("Arbre", () => {
+            console.log("Arbre sélectionné");
+        }));
+
+        panel.addControl(this._createButton("Maison", () => {
+            console.log("Maison sélectionnée");
+        }));
+
+        panel.addControl(this._createButton("Véranda", () => {
+            console.log("Véranda sélectionnée");
+        }));
     }
     destroy() {
         super.destroy();
     }
-    _createFootballPitch() {
-        const groundEntity = new Entity("ground");
-        const mapContainer = this.loadedAssets["footballPitch"];
-        mapContainer.addAllToScene();
-        const footballPitch = mapContainer.meshes[0];
-        mapContainer.meshes.forEach((mesh) => {
-            mesh.receiveShadows = true;
-        });
-        footballPitch.scaling.scaleInPlace(4);
-        const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: PITCH_WIDTH + 5, height: PITCH_HEIGHT }, this.babylonScene);
-        ground.metadata = { tag: groundEntity.tag };
-        ground.isVisible = false;
-        footballPitch.setParent(ground);
-        footballPitch.rotationQuaternion = BABYLON.Quaternion.RotationAxis(new BABYLON.Vector3(1, 0, 0), Math.PI);
-        footballPitch.position = new BABYLON.Vector3(0.928, 0.239, 0.082);
-        this.entityManager.addEntity(groundEntity);
-    }
-
-    _createGround(scene){
-        const ground = new BABYLON.MeshBuilder.CreateGround('ground', { width: 50, height:50}, scene)
-        const groundMat = new BABYLON.StandardMaterial("groundMat", scene)
-        const diffuseTex = new BABYLON.Texture('../../public/textures/rocky_terrain_02_diff_4k.jpg', scene)
-        groundMat.diffuseTexture =  diffuseTex;
+    
+    _createGround(scene) {
+        const ground = BABYLON.MeshBuilder.CreateGround('ground',  { width: 1000, height: 1000 }, scene);
+        const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
+        const diffuseTex = new BABYLON.Texture('../../public/textures/rocky_terrain_02_diff_4k.jpg', scene);
+        groundMat.diffuseTexture = diffuseTex;
         diffuseTex.uScale = 10;
         diffuseTex.vScale = 10;
-        groundMat.specularColor = new BABYLON.Color3(0,0,0)
-        ground.material = groundMat
+        groundMat.specularColor = new BABYLON.Color3(0, 0, 0);
+        ground.material = groundMat;
+    }
+
+    _createAvatar(scene){
+         const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("avatarUI", true, scene);
+        // Image carrée = cercle possible
+        const avatarImage = new BABYLON.GUI.Image("avatar", "../../public/avatar.png");
+        avatarImage.width = "80px";
+        avatarImage.height = "80px";
+
+        // Cercle parfait
+        avatarImage.cornerRadius = 40;
+        avatarImage.clipChildren = true;
+
+        // Apparence et position
+        avatarImage.thickness = 2;
+        avatarImage.color = "white";
+        avatarImage.left = "10px";
+        avatarImage.top = "10px";
+        avatarImage.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        avatarImage.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        advancedTexture.addControl(avatarImage);
+    }
+    // 3. Fonction pour créer un bouton
+     _createButton(label, onClick) {
+        const button = BABYLON.GUI.Button.CreateSimpleButton(label, label);
+        button.width = "120px";
+        button.height = "40px";
+        button.color = "white";
+        button.cornerRadius = 10;
+        button.background = "#444";
+        button.paddingBottom = "10px";
+        button.onPointerUpObservable.add(onClick);
+        return button;
     }
 }

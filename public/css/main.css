@@ -578,3 +578,21 @@
     border-radius: 6px;
     cursor: pointer;
   }
+
+
+  .img-avatar{
+    margin-left: 20px;
+    width: 100px;
+    height: 100px;
+    background: none;
+    border: 1px solid;
+  }
+
+  .menu-special{
+    width: 100vw;
+    height: 100vh;
+    background-position: center;
+    background-size: 100vw 100vh;
+    background-repeat: no-repeat;
+    background: none;
+  }

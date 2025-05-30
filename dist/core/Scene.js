@@ -11,7 +11,7 @@ export class Scene {
         this.name = name;
         // initialize the scene with a main camera
         this.babylonScene = new BABYLON.Scene(this.game.engine);
-        this.mainCamera = new BABYLON.FreeCamera("mainCamera", new BABYLON.Vector3(0,0,-5), this.babylonScene);
+        this.mainCamera = new BABYLON.FreeCamera("mainCamera", new BABYLON.Vector3(0, 5, -10), this.babylonScene);
     }
     async preload() { }
     ;

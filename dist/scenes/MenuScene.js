@@ -1,4 +1,4 @@
-import { Scene } from "../core/Scene";
+import { Scene } from "../core/Scene.js";
 export class MenuScene extends Scene {
     constructor() {
         super("menu");
