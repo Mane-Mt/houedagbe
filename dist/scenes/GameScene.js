@@ -16,7 +16,7 @@ export class GameScene extends Scene {
                 
         let originalTree = null;
 
-        BABYLON.SceneLoader.ImportMesh("", "../../public/", "pine_tree.glb", this.babylonScene, (meshes) => {
+        BABYLON.SceneLoader.ImportMesh("", "public/", "pine_tree.glb", this.babylonScene, (meshes) => {
             const root = new BABYLON.TransformNode("treeRoot", this.babylonScene);
             meshes.forEach(mesh => mesh.parent = root);
 
@@ -107,7 +107,7 @@ export class GameScene extends Scene {
     _createGround(scene) {
         const ground = BABYLON.MeshBuilder.CreateGround('ground',  { width: 1000, height: 1000 }, scene);
         const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
-        const diffuseTex = new BABYLON.Texture('../../public/textures/rocky_terrain_02_diff_4k.jpg', scene);
+        const diffuseTex = new BABYLON.Texture('public/textures/rocky_terrain_02_diff_4k.jpg', scene);
         groundMat.diffuseTexture = diffuseTex;
         diffuseTex.uScale = 10;
         diffuseTex.vScale = 10;
@@ -118,7 +118,7 @@ export class GameScene extends Scene {
     _createAvatar(scene){
          const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("avatarUI", true, scene);
         // Image carrée = cercle possible
-        const avatarImage = new BABYLON.GUI.Image("avatar", "../../public/avatar.png");
+        const avatarImage = new BABYLON.GUI.Image("avatar", "public/avatar.png");
         avatarImage.width = "80px";
         avatarImage.height = "80px";
 
