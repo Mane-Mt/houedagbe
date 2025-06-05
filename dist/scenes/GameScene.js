@@ -19,7 +19,7 @@ export class GameScene extends Scene {
       new BABYLON.Vector3(0, 10, 0),
       this.babylonScene
     );
-    this.babylonScene.attachControl()
+    this.babylonScene.attachControl();
 
     // Create a tree in the game
     let originalTree = null;
@@ -42,7 +42,6 @@ export class GameScene extends Scene {
     //     this.babylonScene.pointerX,
     //     this.babylonScene.pointerY
     //   );
-
     //   if (pickResult.hit && originalTree) {
     //     const point = pickResult.pickedPoint;
     //     // Cloner l'arbre
@@ -55,6 +54,7 @@ export class GameScene extends Scene {
     //     }
     //   }
     // });
+
     //Création d'un nouveau personnage
     const walk = function (turn, dist) {
       this.turn = turn;
@@ -125,11 +125,10 @@ export class GameScene extends Scene {
     this.mainCamera.setTarget(new BABYLON.Vector3(0, -10, 0));
     this._createAvatar(this.babylonScene);
 
-
     // Création de l'avatar
     this._createAvatar(this.babylonScene);
-    
-    //Mouvement du terrai de jeu 
+
+    //Mouvement du terrai de jeu
     // let camVertical = 0;
     // let camHorizontal = 0;
     // window.addEventListener("keydown", (e) => {
@@ -149,38 +148,107 @@ export class GameScene extends Scene {
     //   if (theKey === "arrowleft") camHorizontal = 0;
     //   if (theKey === "arrowright") camHorizontal = 0;
     // });
+    // let homeMesh = null;
+    // BABYLON.SceneLoader.ImportMeshAsync(
+    //   "",
+    //   "public/",
+    //   "tiny_home.glb",
+    //   this.babylonScene
+    // ).then((result) => {
+    //   result.meshes.forEach((mesh) => {
+    //     mesh.metadata = { isHome: true };
+    //   });
+    //   homeMesh = result.meshes[0];
+    //   homeMesh.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+    //   homeMesh.position = new BABYLON.Vector3(-6, 0, 0);
+    //   homeMesh.rotate(
+    //     BABYLON.Axis.Y,
+    //     BABYLON.Tools.ToRadians(-95),
+    //     BABYLON.Space.LOCAL
+    //   );
+    // });
 
-    BABYLON.SceneLoader.ImportMeshAsync(
-      "",
-      "public/",
-      "tiny_home.glb",
-      this.babylonScene
-    ).then((result) => {
-      var dude = result.meshes[0];
-      dude.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-      dude.position = new BABYLON.Vector3(-6, 0, 0);
-      dude.rotate(
-        BABYLON.Axis.Y,
-        BABYLON.Tools.ToRadians(-95),
-        BABYLON.Space.LOCAL
-      );
-    });
+    // // 👉 Gestion du clic sur le canvas
+    // this.game.engine
+    //   .getRenderingCanvas()
+    //   .addEventListener("pointerdown", (evt) => {
+    //     const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
+    //     if (pickResult.hit && pickResult.pickedMesh.metadata?.isHome) {
+    //       console.log("Bonjour le monde");
+    //       homeMesh.dispose(); // 💥 On supprime le mesh
+    //       homeMesh = null; // On libère la variable
+    //     }
+    //   });
 
+    //Portail de l'évernement
     BABYLON.SceneLoader.ImportMeshAsync(
       "",
       "public/",
       "fence_and_gate_wood.glb",
       this.babylonScene
     ).then((result) => {
-      var dude = result.meshes[0];
-      dude.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-      dude.position = new BABYLON.Vector3(0, 0, -6);
-      dude.rotate(
+      let fenceMesh = result.meshes[0];
+      fenceMesh.scaling = new BABYLON.Vector3(0.68, 0.68, 0.68);
+      fenceMesh.position = new BABYLON.Vector3(0, 0, -6);
+      fenceMesh.rotate(
         BABYLON.Axis.Y,
         BABYLON.Tools.ToRadians(-95),
         BABYLON.Space.LOCAL
       );
     });
+
+    BABYLON.SceneLoader.ImportMeshAsync(
+      "",
+      "public/",
+      "garbage_bag.glb",
+      this.babylonScene
+    ).then((result) => {
+        result.meshes.forEach((mesh) => {
+            mesh.metadata = { isGarbage: true };
+        });
+      const originalMesh = result.meshes[0];
+      originalMesh.scaling = new BABYLON.Vector3(0.008, 0.008, 0.008);
+      originalMesh.position = new BABYLON.Vector3(0, 0, 6);
+      originalMesh.rotate(
+        BABYLON.Axis.Y,
+        BABYLON.Tools.ToRadians(-95),
+        BABYLON.Space.LOCAL
+      );
+
+      // 👉 On stocke les positions où on veut les dupliquer
+      const positions = [
+        new BABYLON.Vector3(10, 0, -12),
+        new BABYLON.Vector3(-12, 0, 8),
+        new BABYLON.Vector3(14, 0, 5),
+        new BABYLON.Vector3(-15, 0, -7),
+        new BABYLON.Vector3(8, 0, 14),
+        new BABYLON.Vector3(-9, 0, -14),
+        new BABYLON.Vector3(12, 0, -3),
+        new BABYLON.Vector3(-13, 0, 12),
+      ];
+
+      // 🔁 Dupliquer 8 fois
+      positions.forEach((pos, i) => {
+        const clone = originalMesh.clone(`garbage_bag_${i}`);
+        if (clone) {
+          clone.position = pos.clone();
+          clone.scaling = new BABYLON.Vector3(0.008, 0.008, 0.008);
+          clone.rotation = originalMesh.rotation.clone();
+          clone.metadata = { isGarbage: true }
+        }
+      });
+    });
+    this.game.engine
+      .getRenderingCanvas()
+      .addEventListener("pointerdown", (evt) => {
+        const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
+        console.log(pickResult.hit)
+        console.log(pickResult.pickedMesh?.metadata?.isGarbage)
+        if (pickResult.hit && pickResult.pickedMesh?.metadata?.isGarbage) {
+          console.log("Suppression d’un déchet !");
+          pickResult.pickedMesh.dispose();
+        }
+      });
   }
   destroy() {
     super.destroy();
@@ -189,7 +257,7 @@ export class GameScene extends Scene {
   _createGround(scene) {
     const ground = BABYLON.MeshBuilder.CreateGround(
       "ground",
-      { width: 1000, height: 1000 },
+      { width: 500, height: 500 },
       scene
     );
     const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
