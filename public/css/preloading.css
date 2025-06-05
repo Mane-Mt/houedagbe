@@ -1,0 +1,89 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  background-image: url("../img/background-jungle.jpg"); /* à remplacer */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+#wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#skip-btn {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1000;
+  transition: color 0.3s;
+}
+
+#skip-btn:hover {
+  color: #ddd;
+}
+
+#container {
+  display: flex;
+  align-items: flex-start;
+  max-width: 800px;
+  margin: 40px auto;
+  background-color: rgba(0, 0, 0, 0.6); /*Fond semi-transparent*/
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #fff;
+}
+
+#character {
+  flex: 0 0 150px;
+  margin-right: 20px;
+}
+
+#character img {
+  width: 150px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #fff;
+}
+
+#text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#text-container {
+  font-size: 22px;
+  font-family: 'Courier New', monospace;
+  color: #fff;
+  white-space: pre-wrap;
+  min-height: 200px;
+}
+
+#next-btn {
+  margin-top: 5px;
+  padding: 2.5px 5px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  color: #000;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  align-self: flex-start;
+}

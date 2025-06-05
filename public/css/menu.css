@@ -4,11 +4,11 @@
     background-position: center;
     background-size: 100vw 100vh;
     background-repeat: no-repeat;
-    background-image: url("../img/background-jungle.png");
+    background-image: url("../img/background-jungle.jpg");
 }
 
 .blur-background {
-    background-image: url("../img/blur-background-jungle.png");
+    background-image: url("../img/background-jungle.jpg");
 }
 
 #versionText {
