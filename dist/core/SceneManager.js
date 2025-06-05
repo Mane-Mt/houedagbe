@@ -2,6 +2,7 @@ import { StartScene } from "../scenes/StartScene.js";
 import { MenuScene } from "../scenes/MenuScene.js";
 import { SettingsScene } from "../scenes/SettingsScene.js";
 import { GameScene } from "../scenes/GameScene.js";
+import { PreloadingScene } from "../scenes/PreloadingScene.js";
 export class SceneManager {
     constructor() {
         this.scenes = new Map();
@@ -34,6 +35,8 @@ export class SceneManager {
                 return new MenuScene();
             case "settings":
                 return new SettingsScene();
+            case "preloading":
+                return new PreloadingScene();
             case "game":
                 return new GameScene();
             default:

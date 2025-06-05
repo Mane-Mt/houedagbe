@@ -85,7 +85,9 @@ export class MenuScene extends Scene {
         joinImg.id = "join-img";
         joinBtn.appendChild(joinImg);
         joinBtn.onclick = () => {
-            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "game"));
+            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "preloading"));
+
+            // this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "game"));
         };
         // joinBtn.onmouseenter = (): void => {
         //     this.game.soundManager.playSound("select");
