@@ -71,54 +71,95 @@ export class SecondGamePartScene extends Scene {
     this.mainCamera.parent = camaraContainer;
     this.mainCamera.setTarget(new BABYLON.Vector3(0, -10, 0));
 
-    // === Variables pour le drag à la souris ===
-    let isDragging = false;
-    let previousMouseX = 0;
-    let previousMouseY = 0;
 
-    // Facteur de sensibilité (ajuste à ton goût) :
-    const dragSensitivity = 0.02;
 
-    // Quand on appuie sur un bouton de souris n’importe où dans la fenêtre :
-    window.addEventListener("mousedown", (evt) => {
-      isDragging = true;
-      previousMouseX = evt.clientX;
-      previousMouseY = evt.clientY;
-    });
 
-    // Quand on déplace la souris (si le bouton est toujours enfoncé) :
-    window.addEventListener("mousemove", (evt) => {
-      if (!isDragging) return;
 
-      // Calcul du déplacement en pixels :
-      const deltaX = evt.clientX - previousMouseX;
-      const deltaY = evt.clientY - previousMouseY;
 
-      // On met à jour pour le prochain appel :
-      previousMouseX = evt.clientX;
-      previousMouseY = evt.clientY;
-
-      // On translate camaraContainer en X et Z selon la souris :
-      //   - deltaX entraîne un déplacement sur X
-      //   - deltaY entraîne un déplacement négatif sur Z (pour que tirer vers le bas "avance" vers Z+)
-      camaraContainer.locallyTranslate(
-        new BABYLON.Vector3(
-          deltaX * dragSensitivity,
-          0,
-          -deltaY * dragSensitivity
-        )
+    // 1. Création de la GUI pleine-canvas
+    const advancedTexture =
+      BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
+        "UI", // identifiant quelconque
+        true, // True pour pointerActivable (enable pointer events)
+        this.babylonScene // votre scène Babylon.js
       );
+
+    // On crée un StackPanel vertical, aligné à gauche au milieu de l'écran
+    const leftPanel = new BABYLON.GUI.StackPanel();
+    leftPanel.width = "60px"; // largeur fixe pour le panel
+    leftPanel.isVertical = true; // on empile verticalement
+    leftPanel.horizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    leftPanel.verticalAlignment =
+      BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    leftPanel.paddingRight = "10px"; // marge à droite
+    advancedTexture.addControl(leftPanel);
+
+    function createIconButton(
+      name, 
+      iconUrl,
+      widthPx,
+      heightPx, 
+      onClick 
+    ) {
+      const btn = BABYLON.GUI.Button.CreateImageOnlyButton(name, iconUrl);
+      btn.width = widthPx;
+      btn.height = heightPx;
+      btn.paddingBottom = "10px"; // espacement entre les boutons
+      btn.onPointerUpObservable.add(onClick); // action au clic
+      return btn;
+    }
+
+
+    const compassBtn = createIconButton(
+      "compassBtn",
+      "public/icons/compass.png",
+      "40px",
+      "40px",
+      () => {
+        console.log("Vous avez cliqué sur le compas !");
+        
+      }
+    );
+    leftPanel.addControl(compassBtn);
+
+    const view2DBtn = createIconButton(
+      "view2DBtn",
+      "public/icons/view2d.png",
+      "40px",
+      "40px",
+      () => {
+        console.log("Basculer en vue 2D");
+      }
+    );
+    leftPanel.addControl(view2DBtn);
+
+    const view3DBtn = createIconButton(
+      "view3DBtn",
+      "public/icons/view3d.png", 
+      "40px",
+      "40px",
+      () => {
+        console.log("Basculer en vue 3D");
+
+      }
+    );
+    leftPanel.addControl(view3DBtn);
+
+    // Par exemple, vous pouvez ajouter un effet au survol :
+    [compassBtn, view2DBtn, view3DBtn].forEach((btn) => {
+      btn.onPointerEnterObservable.add(
+        () => (btn.background = "rgba(255,255,255,0.2)")
+      );
+      btn.onPointerOutObservable.add(() => (btn.background = "transparent"));
     });
 
-    // Quand on relâche le bouton de souris n’importe où :
-    window.addEventListener("mouseup", () => {
-      isDragging = false;
-    });
-
-    // (Optionnel) Si la souris sort de la fenêtre, on arrête aussi le drag :
-    window.addEventListener("mouseout", () => {
-      isDragging = false;
-    });
+    // Vous pouvez aussi arrêter l’interaction de Babylon GUI sur les clics si la scène doit
+    // (par exemple) détecter des picking mesh simultanément. Dans ce cas, faites :
+    advancedTexture.idealHeight = this.babylonScene.getEngine().getRenderHeight();
+    advancedTexture.idealWidth = this.babylonScene.getEngine().getRenderWidth();
+    advancedTexture.ignorePointerDownOnEmptySpace = true;
+    advancedTexture.ignorePointerUpOnEmptySpace = true;
   }
 
   destroy() {}
@@ -207,45 +248,6 @@ export class SecondGamePartScene extends Scene {
     progressBar.horizontalAlignment =
       BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     progressBarContainer.addControl(progressBar);
-
-    // === TIMER A DROITE ===
-    const timerText = new BABYLON.GUI.TextBlock();
-    timerText.text = "02:00";
-    timerText.color = "red";
-    timerText.fontSize = 28;
-    timerText.paddingRight = "20px";
-    timerText.horizontalAlignment =
-      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    timerText.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    mainContainer.addControl(timerText);
-
-    // === LOGIQUE TIMER ===
-    const totalTime = 2 * 60;
-    let timeLeft = totalTime;
-
-    function formatTime(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${minutes.toString().padStart(2, "0")}:${secs
-        .toString()
-        .padStart(2, "0")}`;
-    }
-
-    const intervalId = setInterval(() => {
-      timeLeft--;
-
-      if (timeLeft <= 0) {
-        timeLeft = 0;
-        clearInterval(intervalId);
-        timerText.text = "00:00";
-        progressBar.width = 0;
-        return;
-      }
-
-      timerText.text = formatTime(timeLeft);
-      const progress = timeLeft / totalTime;
-      progressBar.width = progress;
-    }, 1000);
   }
   // 3. Fonction pour créer un bouton
   _createButton(label, onClick) {
