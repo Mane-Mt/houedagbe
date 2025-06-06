@@ -90,12 +90,12 @@ export class PreloadingScene extends Scene {
             } else {
                 // container.textContent += "\n\n➤ Fin de l’introduction.";
                 // nextBtn.style.display = 'none';
-                this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "game"));
+                this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "first_game_part"));
             }
         });
 
         skipBtn.addEventListener('click', () => {
-            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "game"));
+            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "first_game_part"));
         });
 
         // Démarre avec le premier paragraphe

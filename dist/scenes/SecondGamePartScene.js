@@ -1,27 +1,26 @@
-import { Entity } from "../core/Entity.js";
 import { Scene } from "../core/Scene.js";
-const PITCH_WIDTH = 40;
-const PITCH_HEIGHT = 27;
-export class FirstGamePartScene extends Scene {
+
+export class SecondGamePartScene extends Scene {
   constructor() {
-    super("first_game_part");
+    super("second_game_part");
+    this._canClick = true;
   }
+
   async preload() {
     this.game.engine.displayLoadingUI();
-    // load assets
+    console.log("La deuxieme partie vient de commencer");
     this.game.engine.hideLoadingUI();
   }
-  async start() {
-    let isMoving = false;
-    let characterSpeed = 2;
+
+  start() {
     const light = new BABYLON.HemisphericLight(
       "lighsa",
       new BABYLON.Vector3(0, 10, 0),
       this.babylonScene
     );
-    this.babylonScene.attachControl();
+    this.mainCamera.attachControl();
     //Création de l'avatar
-    let time = this._createAvatar(this.babylonScene);
+    this._createAvatar(this.babylonScene);
 
     // Create a tree in the game
     let originalTree = null;
@@ -34,8 +33,8 @@ export class FirstGamePartScene extends Scene {
         const root = new BABYLON.TransformNode("treeRoot", this.babylonScene);
         meshes.forEach((mesh) => (mesh.parent = root));
         root.position = new BABYLON.Vector3(3, 0, 0);
-        root.scaling = new BABYLON.Vector3(0.018, 0.08, 0.018);
-        root.setEnabled(false);
+        root.scaling = new BABYLON.Vector3(0.0018, 0.0018, 0.0018);
+        root.setEnabled(true);
         originalTree = root;
       }
     );
@@ -59,7 +58,7 @@ export class FirstGamePartScene extends Scene {
     // });
 
     //Création d'un nouveau personnage
-    this._createCharacter()
+    this._createCharacter();
 
     //Création du terrain de jeu
     this._createGround(this.babylonScene);
@@ -72,144 +71,57 @@ export class FirstGamePartScene extends Scene {
     this.mainCamera.parent = camaraContainer;
     this.mainCamera.setTarget(new BABYLON.Vector3(0, -10, 0));
 
-    // Mouvement du terrai de jeu
-    // let camVertical = 0;
-    // let camHorizontal = 0;
-    // window.addEventListener("keydown", (e) => {
-    //   const theKey = e.key.toLowerCase();
-    //   if (theKey === "arrowup") camVertical = 1;
-    //   if (theKey === "arrowdown") camVertical = -1;
-    //   if (theKey === "arrowleft") camHorizontal = -1;
-    //   if (theKey === "arrowright") camHorizontal = 1;
-    //   camaraContainer.locallyTranslate(
-    //     new BABYLON.Vector3(camHorizontal, 0, camVertical)
-    //   );
-    // });
-    // window.addEventListener("keyup", (e) => {
-    //   const theKey = e.key.toLowerCase();
-    //   if (theKey === "arrowup") camVertical = 0;
-    //   if (theKey === "arrowdown") camVertical = 0;
-    //   if (theKey === "arrowleft") camHorizontal = 0;
-    //   if (theKey === "arrowright") camHorizontal = 0;
-    // });
-    
-    // let homeMesh = null;
-    // BABYLON.SceneLoader.ImportMeshAsync(
-    //   "",
-    //   "public/",
-    //   "tiny_home.glb",
-    //   this.babylonScene
-    // ).then((result) => {
-    //   result.meshes.forEach((mesh) => {
-    //     mesh.metadata = { isHome: true };
-    //   });
-    //   homeMesh = result.meshes[0];
-    //   homeMesh.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-    //   homeMesh.position = new BABYLON.Vector3(-6, 0, 0);
-    //   homeMesh.rotate(
-    //     BABYLON.Axis.Y,
-    //     BABYLON.Tools.ToRadians(-95),
-    //     BABYLON.Space.LOCAL
-    //   );
-    // });
+    // === Variables pour le drag à la souris ===
+    let isDragging = false;
+    let previousMouseX = 0;
+    let previousMouseY = 0;
 
-    // // 👉 Gestion du clic sur le canvas
-    // this.game.engine
-    //   .getRenderingCanvas()
-    //   .addEventListener("pointerdown", (evt) => {
-    //     const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
-    //     if (pickResult.hit && pickResult.pickedMesh.metadata?.isHome) {
-    //       console.log("Bonjour le monde");
-    //       homeMesh.dispose(); // 💥 On supprime le mesh
-    //       homeMesh = null; // On libère la variable
-    //     }
-    //   });
+    // Facteur de sensibilité (ajuste à ton goût) :
+    const dragSensitivity = 0.02;
 
-    //Portail de l'évernement
-    BABYLON.SceneLoader.ImportMeshAsync(
-      "",
-      "public/",
-      "fence_and_gate_wood.glb",
-      this.babylonScene
-    ).then((result) => {
-      let fenceMesh = result.meshes[0];
-      fenceMesh.scaling = new BABYLON.Vector3(0.68, 0.68, 0.68);
-      fenceMesh.position = new BABYLON.Vector3(0, 0, -6);
-      fenceMesh.rotate(
-        BABYLON.Axis.Y,
-        BABYLON.Tools.ToRadians(-95),
-        BABYLON.Space.LOCAL
+    // Quand on appuie sur un bouton de souris n’importe où dans la fenêtre :
+    window.addEventListener("mousedown", (evt) => {
+      isDragging = true;
+      previousMouseX = evt.clientX;
+      previousMouseY = evt.clientY;
+    });
+
+    // Quand on déplace la souris (si le bouton est toujours enfoncé) :
+    window.addEventListener("mousemove", (evt) => {
+      if (!isDragging) return;
+
+      // Calcul du déplacement en pixels :
+      const deltaX = evt.clientX - previousMouseX;
+      const deltaY = evt.clientY - previousMouseY;
+
+      // On met à jour pour le prochain appel :
+      previousMouseX = evt.clientX;
+      previousMouseY = evt.clientY;
+
+      // On translate camaraContainer en X et Z selon la souris :
+      //   - deltaX entraîne un déplacement sur X
+      //   - deltaY entraîne un déplacement négatif sur Z (pour que tirer vers le bas "avance" vers Z+)
+      camaraContainer.locallyTranslate(
+        new BABYLON.Vector3(
+          deltaX * dragSensitivity,
+          0,
+          -deltaY * dragSensitivity
+        )
       );
     });
 
-    let compteur = 9;
-    BABYLON.SceneLoader.ImportMeshAsync(
-      "",
-      "public/",
-      "garbage_bag.glb",
-      this.babylonScene
-    ).then((result) => {
-      result.meshes.forEach((mesh) => {
-        mesh.metadata = { isGarbage: true };
-      });
-      const originalMesh = result.meshes[0];
-      originalMesh.scaling = new BABYLON.Vector3(0.008, 0.008, 0.008);
-      originalMesh.position = new BABYLON.Vector3(0, 0, 6);
-      originalMesh.rotate(
-        BABYLON.Axis.Y,
-        BABYLON.Tools.ToRadians(-95),
-        BABYLON.Space.LOCAL
-      );
-
-      // 👉 On stocke les positions où on veut les dupliquer
-      const positions = [
-        new BABYLON.Vector3(2, 0, -4),
-        new BABYLON.Vector3(-2, 0, -3),
-        new BABYLON.Vector3(3, 0, -2),
-        new BABYLON.Vector3(-3, 0, -6),
-        new BABYLON.Vector3(1, 0, -1),
-        new BABYLON.Vector3(-1, 0, -5),
-        new BABYLON.Vector3(4, 0, -3),
-        new BABYLON.Vector3(-4, 0, -2),
-      ];
-
-      // 🔁 Dupliquer 8 fois
-      positions.forEach((pos, i) => {
-        const clone = originalMesh.clone(`garbage_bag_${i}`);
-        if (clone) {
-          clone.position = pos.clone();
-          clone.scaling = new BABYLON.Vector3(0.008, 0.008, 0.008);
-          clone.rotation = originalMesh.rotation.clone();
-          clone.metadata = { isGarbage: true };
-        }
-      });
+    // Quand on relâche le bouton de souris n’importe où :
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
     });
 
-    this.game.engine
-      .getRenderingCanvas()
-      .addEventListener("pointerdown", (evt) => {
-        const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
-        if (pickResult.hit && pickResult.pickedMesh?.metadata?.isGarbage) {
-          pickResult.pickedMesh.dispose();
-          compteur--;
-          if (compteur === 0) {
-            this.game.fadeIn(
-              this.sceneManager.changeScene.bind(
-                this.sceneManager,
-                "second_game_part"
-              )
-            );
-          }
-        }
-      });
-
-    this.babylonScene.registerAfterRender(() => {
-      console.log(time);
+    // (Optionnel) Si la souris sort de la fenêtre, on arrête aussi le drag :
+    window.addEventListener("mouseout", () => {
+      isDragging = false;
     });
   }
-  destroy() {
-    super.destroy();
-  }
+
+  destroy() {}
 
   _createGround(scene) {
     const ground = BABYLON.MeshBuilder.CreateGround(
@@ -348,7 +260,7 @@ export class FirstGamePartScene extends Scene {
     return button;
   }
 
-  _createCharacter(){
+  _createCharacter() {
     const walk = function (turn, dist) {
       this.turn = turn;
       this.dist = dist;

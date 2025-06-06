@@ -86,7 +86,6 @@ export class MenuScene extends Scene {
         joinBtn.appendChild(joinImg);
         joinBtn.onclick = () => {
             this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "preloading"));
-
             // this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "game"));
         };
         // joinBtn.onmouseenter = (): void => {

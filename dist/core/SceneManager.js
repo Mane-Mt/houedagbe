@@ -1,7 +1,8 @@
 import { StartScene } from "../scenes/StartScene.js";
 import { MenuScene } from "../scenes/MenuScene.js";
 import { SettingsScene } from "../scenes/SettingsScene.js";
-import { GameScene } from "../scenes/GameScene.js";
+import { FirstGamePartScene } from "../scenes/FirstGamePartScene.js";
+import { SecondGamePartScene } from "../scenes/SecondGamePartScene.js";
 import { PreloadingScene } from "../scenes/PreloadingScene.js";
 export class SceneManager {
     constructor() {
@@ -37,8 +38,10 @@ export class SceneManager {
                 return new SettingsScene();
             case "preloading":
                 return new PreloadingScene();
-            case "game":
-                return new GameScene();
+            case "first_game_part":
+                return new FirstGamePartScene();
+            case "second_game_part":       
+                return new SecondGamePartScene();
             default:
                 throw new Error("Scene not found");
         }
