@@ -30,7 +30,7 @@ export class PreloadingScene extends Scene {
                     <button id="next-btn" style="display:none;">Suivant</button>
                 </div>
             </div>
-            <audio id="background-music" src="musique.mp3" loop></audio>
+            <audio id="background-music" src="public/sounds/night.mp3" loop></audio>
         `;
         this.game.uiContainer.appendChild(this._wrapperDiv);
 
@@ -40,7 +40,8 @@ export class PreloadingScene extends Scene {
             audio.play().catch(err => console.log("Lecture audio bloquée :", err));
             document.removeEventListener('click', startMusic);
         };
-        document.addEventListener('click', startMusic);
+        startMusic();
+        // document.addEventListener('click', startMusic);
 
         // === Typing animation setup ===
         const container = this._wrapperDiv.querySelector('#text-container');
