@@ -37,6 +37,8 @@ export class GameScene extends Scene {
         originalTree = root;
       }
     );
+
+    let time = this._createAvatar(this.babylonScene);
     // window.addEventListener("click", () => {
     //   const pickResult = this.babylonScene.pick(
     //     this.babylonScene.pointerX,
@@ -123,10 +125,6 @@ export class GameScene extends Scene {
     camaraContainer.position = new BABYLON.Vector3(0, 10, 0);
     this.mainCamera.parent = camaraContainer;
     this.mainCamera.setTarget(new BABYLON.Vector3(0, -10, 0));
-    this._createAvatar(this.babylonScene);
-
-    // Création de l'avatar
-    this._createAvatar(this.babylonScene);
 
     //Mouvement du terrai de jeu
     // let camVertical = 0;
@@ -197,15 +195,17 @@ export class GameScene extends Scene {
       );
     });
 
+
+    let compteur = 9;
     BABYLON.SceneLoader.ImportMeshAsync(
       "",
       "public/",
       "garbage_bag.glb",
       this.babylonScene
     ).then((result) => {
-        result.meshes.forEach((mesh) => {
-            mesh.metadata = { isGarbage: true };
-        });
+      result.meshes.forEach((mesh) => {
+        mesh.metadata = { isGarbage: true };
+      });
       const originalMesh = result.meshes[0];
       originalMesh.scaling = new BABYLON.Vector3(0.008, 0.008, 0.008);
       originalMesh.position = new BABYLON.Vector3(0, 0, 6);
@@ -217,14 +217,14 @@ export class GameScene extends Scene {
 
       // 👉 On stocke les positions où on veut les dupliquer
       const positions = [
-        new BABYLON.Vector3(10, 0, -12),
-        new BABYLON.Vector3(-12, 0, 8),
-        new BABYLON.Vector3(14, 0, 5),
-        new BABYLON.Vector3(-15, 0, -7),
-        new BABYLON.Vector3(8, 0, 14),
-        new BABYLON.Vector3(-9, 0, -14),
-        new BABYLON.Vector3(12, 0, -3),
-        new BABYLON.Vector3(-13, 0, 12),
+        new BABYLON.Vector3(2, 0, -4),
+        new BABYLON.Vector3(-2, 0, -3),
+        new BABYLON.Vector3(3, 0, -2),
+        new BABYLON.Vector3(-3, 0, -6),
+        new BABYLON.Vector3(1, 0, -1),
+        new BABYLON.Vector3(-1, 0, -5),
+        new BABYLON.Vector3(4, 0, -3),
+        new BABYLON.Vector3(-4, 0, -2),
       ];
 
       // 🔁 Dupliquer 8 fois
@@ -234,21 +234,30 @@ export class GameScene extends Scene {
           clone.position = pos.clone();
           clone.scaling = new BABYLON.Vector3(0.008, 0.008, 0.008);
           clone.rotation = originalMesh.rotation.clone();
-          clone.metadata = { isGarbage: true }
+          clone.metadata = { isGarbage: true };
         }
       });
     });
+    
     this.game.engine
       .getRenderingCanvas()
       .addEventListener("pointerdown", (evt) => {
         const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
-        console.log(pickResult.hit)
-        console.log(pickResult.pickedMesh?.metadata?.isGarbage)
         if (pickResult.hit && pickResult.pickedMesh?.metadata?.isGarbage) {
-          console.log("Suppression d’un déchet !");
-          pickResult.pickedMesh.dispose();
+            pickResult.pickedMesh.dispose();
+            compteur--;
         }
+        if(compteur === 0){
+            window.alert("Vous venez de gagner la première partie")
+        }
+       
       });
+
+      this.babylonScene.registerAfterRender(() =>{
+        console.log(time)
+      })
+
+    
   }
   destroy() {
     super.destroy();
@@ -272,30 +281,111 @@ export class GameScene extends Scene {
     ground.material = groundMat;
   }
   _createAvatar(scene) {
+    // Création de l'avatar
     const advancedTexture =
       BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
         "avatarUI",
         true,
         scene
       );
-    // Image carrée = cercle possible
+    // === CONTAINER PRINCIPAL EN HAUT ===
+    const mainContainer = new BABYLON.GUI.Rectangle();
+    mainContainer.width = 1;
+    mainContainer.height = "200px";
+    mainContainer.thickness = 0;
+    mainContainer.horizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    mainContainer.verticalAlignment =
+      BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    mainContainer.paddingTop = "10px";
+    advancedTexture.addControl(mainContainer);
+
+    // === CONTAINER GAUCHE : AVATAR + PROGRESSBAR ===
+    const leftContainer = new BABYLON.GUI.StackPanel();
+    leftContainer.width = "140px"; // Largeur fixe
+    leftContainer.height = "200px";
+    leftContainer.isVertical = true;
+    leftContainer.horizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    leftContainer.verticalAlignment =
+      BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    leftContainer.paddingLeft = "10px";
+    mainContainer.addControl(leftContainer);
+
+    // === AVATAR ===
     const avatarImage = new BABYLON.GUI.Image("avatar", "public/avatar.png");
     avatarImage.width = "80px";
     avatarImage.height = "80px";
-
-    // Cercle parfait
     avatarImage.cornerRadius = 40;
     avatarImage.clipChildren = true;
-
-    // Apparence et position
+    avatarImage.paddingLeft = "20px";
     avatarImage.thickness = 2;
     avatarImage.color = "white";
-    avatarImage.left = "10px";
-    avatarImage.top = "10px";
     avatarImage.horizontalAlignment =
       BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
     avatarImage.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
-    advancedTexture.addControl(avatarImage);
+    leftContainer.addControl(avatarImage);
+
+    // === PROGRESS BAR ===
+    const progressBarContainer = new BABYLON.GUI.Rectangle();
+    progressBarContainer.width = "100px";
+    progressBarContainer.height = "20px";
+    progressBarContainer.cornerRadius = 10;
+    progressBarContainer.color = "white";
+    progressBarContainer.thickness = 2;
+    progressBarContainer.background = "gray";
+    progressBarContainer.paddingTop = "5px";
+    leftContainer.addControl(progressBarContainer);
+
+    const progressBar = new BABYLON.GUI.Rectangle();
+    progressBar.width = 1; // 100%
+    progressBar.height = "20px";
+    progressBar.cornerRadius = 10;
+    progressBar.color = "green";
+    progressBar.thickness = 0;
+    progressBar.background = "green";
+    progressBar.horizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+    progressBarContainer.addControl(progressBar);
+
+    // === TIMER A DROITE ===
+    const timerText = new BABYLON.GUI.TextBlock();
+    timerText.text = "02:00";
+    timerText.color = "red";
+    timerText.fontSize = 28;
+    timerText.paddingRight = "20px";
+    timerText.horizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    timerText.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    mainContainer.addControl(timerText);
+
+    // === LOGIQUE TIMER ===
+    const totalTime = 2 * 60;
+    let timeLeft = totalTime;
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes.toString().padStart(2, "0")}:${secs
+        .toString()
+        .padStart(2, "0")}`;
+    }
+
+    const intervalId = setInterval(() => {
+      timeLeft--;
+
+      if (timeLeft <= 0) {
+        timeLeft = 0;
+        clearInterval(intervalId);
+        timerText.text = "00:00";
+        progressBar.width = 0;
+        return;
+      }
+
+      timerText.text = formatTime(timeLeft);
+      const progress = timeLeft / totalTime;
+      progressBar.width = progress;
+    }, 1000);
   }
   // 3. Fonction pour créer un bouton
   _createButton(label, onClick) {
