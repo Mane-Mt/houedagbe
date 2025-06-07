@@ -4,6 +4,7 @@ import { SettingsScene } from "../scenes/SettingsScene.js";
 import { FirstGamePartScene } from "../scenes/FirstGamePartScene.js";
 import { SecondGamePartScene } from "../scenes/SecondGamePartScene.js";
 import { PreloadingScene } from "../scenes/PreloadingScene.js";
+import { FirstStepCompletion } from "../scenes/FirstStepCompletion.js";
 export class SceneManager {
     constructor() {
         this.scenes = new Map();
@@ -40,6 +41,8 @@ export class SceneManager {
                 return new PreloadingScene();
             case "first_game_part":
                 return new FirstGamePartScene();
+            case "first_step_completion":
+                return new FirstStepCompletion();
             case "second_game_part":       
                 return new SecondGamePartScene();
             default:

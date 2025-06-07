@@ -196,7 +196,7 @@ export class FirstGamePartScene extends Scene {
             this.game.fadeIn(
               this.sceneManager.changeScene.bind(
                 this.sceneManager,
-                "second_game_part"
+                "first_step_completion"
               )
             );
           }
