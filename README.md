@@ -17,7 +17,22 @@ Notre objectif est de sensibiliser de manière ludique à l’impact de nos choi
 Dans Houedagbo incarnez un héros chargé de reconstruire une Terre dévastée par la pollution et l’abandon. À travers trois niveaux progressifs, vous devrez d’abord nettoyer une ville envahie par les déchets, puis rebâtir les bases de la vie en construisant une maison, en plantant des arbres et en réinstallant des services essentiels. Enfin, vous serez confronté au plus grand défi : redonner vie à toute une ville en créant une société durable, équilibrée et respectueuse de l’environnement. Chaque action compte, chaque choix façonne l’avenir.
 
 ## Fonctionnalités
-### Comment créer une partie
+### Comment lancer une partie
+Pour commencer une partie, appuyez sur la touche espace.
 ![image](https://github.com/user-attachments/assets/5e8cde80-337c-4a88-a4ec-5e8008888245)
+### Menu
+Sur le menu le joueur peut soit aller dans les paramètres et personnaliser son joueur ou commencer directement avec le joueur par défaut
+![image](https://github.com/user-attachments/assets/cb7ca86a-ed25-43fa-9c46-081e65ad730b)
+### Niveau 1: Nettoyer la ville
+Après le scénario d'introduction on arrive au niveau 1 du jeu qui consiste à nettoyer la ville en ramassant tous les sacs d'ordures qui jonchent le sol.
+![image](https://github.com/user-attachments/assets/4cdaf18f-c281-44e2-bb5b-fd7009e60f9b)
+
+### Niveau 2: Commencer à rebatir la ville
+Après avoir fini le nettoyage d'ordures on est invité à commencer la construction de la ville
+![image](https://github.com/user-attachments/assets/d89f33ed-eb99-4263-bfec-24de15c34bba)
+
+
+
+
 
 
