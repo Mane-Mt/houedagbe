@@ -4,7 +4,14 @@ import { SettingsScene } from "../scenes/SettingsScene.js";
 import { FirstGamePartScene } from "../scenes/FirstGamePartScene.js";
 import { SecondGamePartScene } from "../scenes/SecondGamePartScene.js";
 import { PreloadingScene } from "../scenes/PreloadingScene.js";
+import { FirstStepHint } from "../scenes/FirstStepHint.js";
 import { FirstStepCompletion } from "../scenes/FirstStepCompletion.js";
+import { SecondStepHint } from "../scenes/SecondStepHint.js";
+import { GameOverScene } from "../scenes/GameOverScene.js";
+import { SecondStepCompletion } from "../scenes/SecondStepCompletion.js";
+import { ThirdGamePartScene } from "../scenes/ThirdGamePartScene.js";
+import { ThirdStepCompletion } from "../scenes/ThirdStepCompletion.js";
+import { ThirdStepHint } from "../scenes/ThirdStepHint.js";
 export class SceneManager {
     constructor() {
         this.scenes = new Map();
@@ -39,12 +46,26 @@ export class SceneManager {
                 return new SettingsScene();
             case "preloading":
                 return new PreloadingScene();
+            case "game_over":       
+                return new GameOverScene();
             case "first_game_part":
                 return new FirstGamePartScene();
+            case "first_step_hint":
+                return new FirstStepHint();
             case "first_step_completion":
                 return new FirstStepCompletion();
             case "second_game_part":       
                 return new SecondGamePartScene();
+            case "second_step_completion":       
+                return new SecondStepCompletion();
+            case "second_step_hint":
+            return new SecondStepHint();
+                case "third_game_part":       
+            return new ThirdGamePartScenea();
+            case "third_step_completion":       
+                return new ThirdStepCompletion();
+            case "third_step_hint":
+                return new ThirdStepHint();
             default:
                 throw new Error("Scene not found");
         }

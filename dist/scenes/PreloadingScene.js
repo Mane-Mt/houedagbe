@@ -21,7 +21,7 @@ export class PreloadingScene extends Scene {
         this._wrapperDiv.id = "wrapper";
         this._wrapperDiv.innerHTML = `
             <button id="skip-btn">Skip</button>
-            <div id="container">
+            <div id="container" class="container">
                 <div id="character">
                     <img src="public/img/king.png" alt="Personnage" />
                 </div>
@@ -91,12 +91,12 @@ export class PreloadingScene extends Scene {
             } else {
                 // container.textContent += "\n\n➤ Fin de l’introduction.";
                 // nextBtn.style.display = 'none';
-                this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "first_game_part"));
+                this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "first_step_hint"));
             }
         });
 
         skipBtn.addEventListener('click', () => {
-            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "first_game_part"));
+            this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "first_step_hint"));
         });
 
         // Démarre avec le premier paragraphe

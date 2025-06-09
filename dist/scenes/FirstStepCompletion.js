@@ -21,10 +21,14 @@ export class FirstStepCompletion extends Scene {
         this._wrapperDiv.id = "wrapper";
         this._wrapperDiv.className = "success-background";
         this._wrapperDiv.innerHTML = `
-            <div id="container">
+            <div id="container" class="container hint text-center">
+                <img src="public/img/emojie-smile.png" alt="Personnage" height="150" />
+                <br/>
+                <br/>
                 <div id="text-content">
                     <div id="text-container"></div>
-                  
+                    <button id="prev-btn" style="display:none;">Non, retour à l'acceuil</button>
+                    <button id="next-btn" style="display:none;">Oui, bien bûr</button>
                 </div>
             </div>
             <button id="next-btn" style="display:none;">Suivant</button>
@@ -44,12 +48,11 @@ export class FirstStepCompletion extends Scene {
         // === Typing animation setup ===
         const container = this._wrapperDiv.querySelector('#text-container');
         const nextBtn = this._wrapperDiv.querySelector('#next-btn');
+         const prevBtn = this._wrapperDiv.querySelector('#prev-btn');
         // const skipBtn = this._wrapperDiv.querySelector('#skip-btn');
 
         const paragraphs = [
-            " 🎉 ... Félicitation .... 🎊, \n vous avez terminé votre prémière mission avec succès 🥳.",
-            "Votre prochaine Mission...\n Consiste à rebatir la ville, que vous  ",
-            "Heros , Etes vous prêt pour la prochaine aventure ?",
+            " 🎉 ... Félicitation .... 🎊, \n vous avez terminé votre prémière mission avec succès 🥳.\n Héros êtes vous prêt pour la prochaine aventure ?",
             
         ];
 
@@ -80,6 +83,20 @@ export class FirstStepCompletion extends Scene {
         }
 
         nextBtn.addEventListener('click', () => {
+            currentParagraph++;
+            if (currentParagraph < paragraphs.length) {
+                typeParagraph(paragraphs[currentParagraph]);
+            } else {
+                // container.textContent += "\n\n➤ Fin de l’introduction.";
+                // nextBtn.style.display = 'none';
+                this.game.fadeIn( this.sceneManager.changeScene.bind(
+                this.sceneManager,
+                "second_step_hint"
+              ));
+            }
+        });
+
+         nextBtn.addEventListener('click', () => {
             currentParagraph++;
             if (currentParagraph < paragraphs.length) {
                 typeParagraph(paragraphs[currentParagraph]);

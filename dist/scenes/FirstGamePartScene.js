@@ -327,6 +327,10 @@ export class FirstGamePartScene extends Scene {
         clearInterval(intervalId);
         timerText.text = "00:00";
         progressBar.width = 0;
+        this.game.fadeIn( this.sceneManager.changeScene.bind(
+                this.sceneManager,
+                "game_over"
+              ));
         return;
       }
 
