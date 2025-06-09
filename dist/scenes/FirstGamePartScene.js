@@ -12,8 +12,7 @@ export class FirstGamePartScene extends Scene {
     this.game.engine.hideLoadingUI();
   }
   async start() {
-    let isMoving = false;
-    let characterSpeed = 2;
+    
     const light = new BABYLON.HemisphericLight(
       "lighsa",
       new BABYLON.Vector3(0, 10, 0),

@@ -71,83 +71,131 @@ export class SecondGamePartScene extends Scene {
     this.mainCamera.parent = camaraContainer;
     this.mainCamera.setTarget(new BABYLON.Vector3(0, -10, 0));
 
-
-
-
-
-
-    // 1. Création de la GUI pleine-canvas
     const advancedTexture =
       BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
-        "UI", // identifiant quelconque
-        true, // True pour pointerActivable (enable pointer events)
-        this.babylonScene // votre scène Babylon.js
+        "UI",
+        true,
+        this.babylonScene
       );
-
-    // On crée un StackPanel vertical, aligné à gauche au milieu de l'écran
     const leftPanel = new BABYLON.GUI.StackPanel();
-    leftPanel.width = "60px"; // largeur fixe pour le panel
-    leftPanel.isVertical = true; // on empile verticalement
+    let homeMesh = null;
+    leftPanel.width = "60px";
+    leftPanel.isVertical = true;
+    leftPanel.color = "white";
+    leftPanel.left = "10px";
+    leftPanel.isVertical = true;
     leftPanel.horizontalAlignment =
       BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    leftPanel.verticalAlignment =
-      BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-    leftPanel.paddingRight = "10px"; // marge à droite
+    leftPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    leftPanel.paddingRight = "10px";
     advancedTexture.addControl(leftPanel);
+    let isClick = false;
+    let isPlacingHome = false;
+    const optionBtns = ["opt1", "opt2"].map((name, i) => {
+      const btn = createIconButton(
+        name,
+        `public/icons/parametres.png`,
+        "40px",
+        "40px",
+        () => {
+          if (name === "opt1") {
+            this._showBabylonAlert(
+              advancedTexture,
+              "Cliquez sur la scène pour placer une maison.",
+              (event) => {
+                event.preventDefault();
 
-    function createIconButton(
-      name, 
-      iconUrl,
-      widthPx,
-      heightPx, 
-      onClick 
-    ) {
-      const btn = BABYLON.GUI.Button.CreateImageOnlyButton(name, iconUrl);
-      btn.width = widthPx;
-      btn.height = heightPx;
-      btn.paddingBottom = "10px"; // espacement entre les boutons
-      btn.onPointerUpObservable.add(onClick); // action au clic
+                BABYLON.SceneLoader.ImportMeshAsync(
+                  "",
+                  "public/",
+                  "tiny_home.glb",
+                  this.babylonScene
+                ).then((result) => {
+                  result.meshes.forEach((mesh) => {
+                    mesh.metadata = { isHome: true };
+                  });
+                  homeMesh = result.meshes[0];
+                  homeMesh.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+                  homeMesh.position = new BABYLON.Vector3(-6, 0, 0);
+                  homeMesh.isVisible = false;
+                  homeMesh.rotate(
+                    BABYLON.Axis.Y,
+                    BABYLON.Tools.ToRadians(-95),
+                    BABYLON.Space.LOCAL
+                  );
+                  isPlacingHome = true;
+                });
+              }
+            );
+          }
+        }
+      );
+      btn.top = "10px";
+      btn.alpha = 0;
+      btn.isVisible = false;
+      btn.scaleX = 1;
+      btn.scaleY = 1;
+      leftPanel.addControl(btn);
       return btn;
-    }
+    });
 
-
+    // 3. crée compassBtn et toggle l’apparition des optionBtns
+    let panelVisible = false;
     const compassBtn = createIconButton(
       "compassBtn",
-      "public/icons/compass.png",
+      "public/icons/parametres.png",
       "40px",
       "40px",
       () => {
-        console.log("Vous avez cliqué sur le compas !");
-        
+        panelVisible = !panelVisible;
+        optionBtns.forEach((btn, i) => {
+          btn.isVisible = true; // nécessaire pour animer
+          // animation alpha et scale (in/out)
+          const fromAlpha = panelVisible ? 0 : 1;
+          const toAlpha = panelVisible ? 1 : 0;
+          const fromScale = panelVisible ? 0.5 : 1;
+          const toScale = panelVisible ? 1 : 0.5;
+
+          const fade = new BABYLON.Animation(
+            `fade_${btn.name}`,
+            "alpha",
+            60,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+          );
+          fade.setKeys([
+            { frame: 0, value: fromAlpha },
+            { frame: 15, value: toAlpha },
+          ]);
+
+          const scaleX = fade.clone();
+          scaleX.targetProperty = "scaleX";
+          scaleX.setKeys([
+            { frame: 0, value: fromScale },
+            { frame: 15, value: toScale },
+          ]);
+          const scaleY = fade.clone();
+          scaleY.targetProperty = "scaleY";
+          scaleY.setKeys(scaleX.getKeys());
+
+          this.babylonScene.beginDirectAnimation(
+            btn,
+            [fade, scaleX, scaleY],
+            0,
+            15,
+            false,
+            1,
+            () => {
+              if (!panelVisible) btn.isVisible = false;
+            }
+          );
+        });
       }
     );
     leftPanel.addControl(compassBtn);
 
-    const view2DBtn = createIconButton(
-      "view2DBtn",
-      "public/icons/view2d.png",
-      "40px",
-      "40px",
-      () => {
-        console.log("Basculer en vue 2D");
-      }
-    );
-    leftPanel.addControl(view2DBtn);
-
-    const view3DBtn = createIconButton(
-      "view3DBtn",
-      "public/icons/view3d.png", 
-      "40px",
-      "40px",
-      () => {
-        console.log("Basculer en vue 3D");
-
-      }
-    );
-    leftPanel.addControl(view3DBtn);
-
-    // Par exemple, vous pouvez ajouter un effet au survol :
-    [compassBtn, view2DBtn, view3DBtn].forEach((btn) => {
+    // 4. (optionnel) effets au survol
+    [compassBtn, ...optionBtns].forEach((btn) => {
       btn.onPointerEnterObservable.add(
         () => (btn.background = "rgba(255,255,255,0.2)")
       );
@@ -156,10 +204,54 @@ export class SecondGamePartScene extends Scene {
 
     // Vous pouvez aussi arrêter l’interaction de Babylon GUI sur les clics si la scène doit
     // (par exemple) détecter des picking mesh simultanément. Dans ce cas, faites :
-    advancedTexture.idealHeight = this.babylonScene.getEngine().getRenderHeight();
+    advancedTexture.idealHeight = this.babylonScene
+      .getEngine()
+      .getRenderHeight();
     advancedTexture.idealWidth = this.babylonScene.getEngine().getRenderWidth();
     advancedTexture.ignorePointerDownOnEmptySpace = true;
     advancedTexture.ignorePointerUpOnEmptySpace = true;
+
+    // Fonction pour créer un bouton
+    function createIconButton(name, iconUrl, widthPx, heightPx, onClick) {
+      const btn = BABYLON.GUI.Button.CreateImageOnlyButton(name, iconUrl);
+      btn.width = widthPx; // ex. "40px"
+      btn.height = heightPx; // ex. "40px"
+
+      // coins arrondis et découpe de l'image pour un cercle parfait
+      const w = parseInt(widthPx, 10);
+      const h = parseInt(heightPx, 10);
+      btn.cornerRadius = Math.min(w, h) / 2;
+      btn.clipChildren = true;
+      btn.thickness = 0; // pas de bordure
+      btn.paddingBottom = "20px"; // espacement dans le panel
+      btn.onPointerUpObservable.add((evt, state) => {
+        evt.preventDefault?.();
+        onClick(evt, state);
+      });
+      return btn;
+    }
+
+    window.addEventListener("click", () => {
+      if (isPlacingHome && homeMesh) {
+        const pickResult = this.babylonScene.pick(
+          this.babylonScene.pointerX,
+          this.babylonScene.pointerY
+        );
+
+        if (pickResult.hit && pickResult.pickedPoint) {
+          const point = pickResult.pickedPoint;
+
+          const clone = homeMesh.clone("homeClone_" + Date.now());
+          if (clone) {
+            clone.position = point;
+            clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+            clone.setEnabled(true);
+            console.log("Maison placée à :", point);
+          }
+          isPlacingHome = false;
+        }
+      }
+    });
   }
 
   destroy() {}
@@ -319,5 +411,79 @@ export class SecondGamePartScene extends Scene {
         }
       });
     });
+  }
+
+  _showBabylonAlert(advancedTexture, message, onClose = (event) => {}) {
+    // Overlay flouté
+    const overlay = new BABYLON.GUI.Rectangle();
+    overlay.width = 1;
+    overlay.height = 1;
+    overlay.background = "rgba(0,0,0,0.5)";
+    overlay.thickness = 0;
+    overlay.zIndex = 10;
+    advancedTexture.addControl(overlay);
+
+    // Fenêtre de dialogue
+    const dialog = new BABYLON.GUI.Rectangle("alertBox");
+    dialog.width = "300px";
+    dialog.height = "160px";
+    dialog.cornerRadius = 15;
+    dialog.color = "#0078D4";
+    dialog.thickness = 2;
+    dialog.background = "white";
+    dialog.zIndex = 11;
+    overlay.addControl(dialog);
+
+    // Message texte
+    const msgText = new BABYLON.GUI.TextBlock();
+    msgText.text = message;
+    msgText.color = "black";
+    msgText.fontSize = 18;
+    msgText.textWrapping = true;
+    msgText.textHorizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    msgText.textVerticalAlignment =
+      BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    msgText.paddingTop = "10px";
+    msgText.height = "60%";
+    dialog.addControl(msgText);
+
+    // Bouton OK
+    const okBtn = BABYLON.GUI.Button.CreateSimpleButton("okBtn", "OK");
+    okBtn.width = "80px";
+    okBtn.height = "30px";
+    okBtn.color = "white";
+    okBtn.background = "#0078D4";
+    okBtn.cornerRadius = 10;
+    okBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    okBtn.top = "-10px";
+
+    okBtn.onPointerUpObservable.add(() => {
+      overlay.dispose();
+
+      onClose(event);
+    });
+
+    dialog.addControl(okBtn);
+
+    // Bouton X (fermer)
+    const closeBtn = BABYLON.GUI.Button.CreateSimpleButton("closeBtn", "✕");
+    closeBtn.width = "30px";
+    closeBtn.height = "30px";
+    closeBtn.color = "white";
+    closeBtn.background = "red";
+    closeBtn.cornerRadius = 15;
+    closeBtn.horizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    closeBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    closeBtn.top = "5px";
+    closeBtn.left = "-5px";
+
+    closeBtn.onPointerUpObservable.add(() => {
+      overlay.dispose();
+      onClose();
+    });
+
+    dialog.addControl(closeBtn);
   }
 }
