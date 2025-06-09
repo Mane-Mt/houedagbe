@@ -9,15 +9,13 @@ html, body {
   background-repeat: no-repeat;
 }
 .success-background{
-  width: 100vw;
-    height: 100vh;
-    background-position: center;
-    background-size: 100vw 100vh;
-  background-image: url("../img/background-completion.jpg"); /* à remplacer */
+  background-position: center;
+  background-image: url("../img/background-completion.png"); /* à remplacer */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
+
 #wrapper {
   position: relative;
   display: flex;

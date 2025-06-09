@@ -22,9 +22,6 @@ export class FirstStepCompletion extends Scene {
         this._wrapperDiv.className = "success-background";
         this._wrapperDiv.innerHTML = `
             <div id="container">
-                // <div id="character">
-                //     <img src="public/img/king.png" alt="Personnage" />
-                // </div>
                 <div id="text-content">
                     <div id="text-container"></div>
                   
