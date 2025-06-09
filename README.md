@@ -1,5 +1,5 @@
 # Trailer du jeu
-# Lien du jeu
+## Lien du jeu
 # Code source
 # Présentation de l’équipe
 Notre équipe est composée d’étudiants en L3 MIAGE, chacun ayant apporté son expertise au développement de notre jeu. Mathieu Maneh, Fabrice Agbo, Andy Bongo.
