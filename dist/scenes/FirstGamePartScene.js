@@ -12,7 +12,23 @@ export class FirstGamePartScene extends Scene {
     this.game.engine.hideLoadingUI();
   }
   async start() {
-    
+    let totDishes = 9.
+        let compteur = totDishes;
+
+    this._counterText = document.createElement("div");
+this._counterText.id = "garbage-counter";
+this._counterText.textContent = `Ordure(s) collectée(s) : 0 / ${totDishes}`;
+this._counterText.style.position = "absolute";
+this._counterText.style.top = "10px";
+this._counterText.style.left = "40%";
+this._counterText.style.color = "white";
+this._counterText.style.fontSize = "18px";
+this._counterText.style.padding = "8px";
+this._counterText.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+this._counterText.style.borderRadius = "5px";
+this._counterText.style.zIndex = "10";
+  document.body.appendChild(this._counterText);
+
     const light = new BABYLON.HemisphericLight(
       "lighsa",
       new BABYLON.Vector3(0, 10, 0),
@@ -141,7 +157,7 @@ export class FirstGamePartScene extends Scene {
       );
     });
 
-    let compteur = 9;
+
     BABYLON.SceneLoader.ImportMeshAsync(
       "",
       "public/",
@@ -191,6 +207,10 @@ export class FirstGamePartScene extends Scene {
         if (pickResult.hit && pickResult.pickedMesh?.metadata?.isGarbage) {
           pickResult.pickedMesh.dispose();
           compteur--;
+
+          const cleaned = 9 - compteur;
+          this._counterText.textContent = `Ordure(s) collectée(s) :  ${cleaned} / ${totDishes}`;
+
           if (compteur === 0) {
             this.game.fadeIn(
               this.sceneManager.changeScene.bind(
@@ -208,6 +228,9 @@ export class FirstGamePartScene extends Scene {
   }
   destroy() {
     super.destroy();
+    // if (this._counterText) {
+      document.body.removeChild(this._counterText);
+    // }
   }
 
   _createGround(scene) {
