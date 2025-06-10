@@ -22,7 +22,7 @@ export class ThirdStepHint extends Scene {
         // this._wrapperDiv.className = "success-background";
         this._wrapperDiv.innerHTML = `
             <div id="container" class="hint">
-                <h1 style="color: white" > Ma deuxième mission </h1>
+                <h1 style="color: white" > Ma troisième mission </h1>
                 <img src="public/img/hint.png" alt="Personnage" height="150" />
                 <div id="text-content">
                     <div id="text-container"></div>
@@ -48,7 +48,8 @@ export class ThirdStepHint extends Scene {
         // const skipBtn = this._wrapperDiv.querySelector('#skip-btn');
 
          const paragraphs = [
-           "Après ton noble travail de nettoyage, une pluie d’espoir s’est enfin abattue sur la ville.\n\nUne nouvelle vie peut éclore.\n\nTa mission : reconstruire.\n\nÉriger un toit. Planter quelques arbres. Installer une poubelle publique.\n\nOffre aux survivants le strict nécessaire :\nun abri… un souffle vert… une place pour jeter le passé.\n\nC’est le premier pas vers la renaissance."
+         "Après la reconstruction… vient l’extension.\n\nTon peuple a survécu. Maintenant, il doit vivre.\n\nÉtends tes infrastructures, bâtis de nouvelles maisons.\nFais de la nature ton alliée : intensifie le reboisement.\n\nEt n’oublie pas : une ville propre est une ville en paix.\nInstalle des poubelles publiques, protège ce qui a été sauvé.\n\nCeci est ta dernière mission.\nOffre à ton royaume une vie saine… et un avenir prospère."
+
             ];
 
 

@@ -49,13 +49,18 @@ export class PreloadingScene extends Scene {
         const skipBtn = this._wrapperDiv.querySelector('#skip-btn');
 
         const paragraphs = [
-            "Le souffle de la mort a tout ravagé.\nLes flammes ont dévoré chaque village, chaque arbre, chaque espoir.\nLe silence règne là où résonnaient autrefois les rires.",
-            "Houedagbe, jadis un royaume florissant, n’est plus qu’un désert de cendres et de ruines.\nLes dieux, furieux et silencieux, détournent leurs regards.\nLeur colère pèse sur chaque pierre, chaque souffle.",
-            "Toi, seul survivant d’une ancienne lignée, tu portes maintenant le fardeau insupportable :\nredonner vie à ce monde dévasté.",
-            // "Mais la route sera longue.\nLe sang coulera.\nLes traîtres se cacheront dans l’ombre.\nLa nature elle-même sera contre toi.",
-            // "Tu devras reconstruire, non seulement les villages,\nmais aussi les liens brisés entre les hommes et les dieux.",
-            // "Chaque décision est une lame.\nChaque erreur, une condamnation.\nÉchoue, et le royaume sombrera à jamais dans les ténèbres.",
-            "L’heure est venue.\nRelève-toi, Élu.\nPorte la lumière… ou péris dans les ombres."
+
+            "Tout est chaos.\nLa ville étouffe sous les déchets.\nLa pollution a tout ravagé : l’air, la terre, les âmes.",
+
+            "Les murs s’effondrent, la nature se meurt, et l’espoir disparaît…",
+
+            "Mais toi, Élu, tu es encore debout.\nDernier souffle d’un monde à bout de force.",
+
+            "Ta mission commence ici :\nNettoyer les ruines.\nRebâtir les fondations.\nÉtendre la vie, avant qu’il ne soit trop tard.",
+
+            "Ce monde n’a plus que toi.\nRelève-toi… et redonne-lui un avenir."
+
+
         ];
 
         let currentParagraph = 0;

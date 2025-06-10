@@ -16,7 +16,7 @@ export class ThirdGamePartScene extends Scene {
     let totalToBuild = 2 ;
     this._counterText = document.createElement("div");
     this._counterText.id = "garbage-counter";
-    this._counterText.textContent = `Objectifs reconstruction => Maison(s) : 0 / ${totalToBuild}  |  Arbre(s) : 0 / ${totalToBuild} `;
+    this._counterText.textContent = `Objectifs extension => Maison(s) : 0 / ${totalToBuild}  |  Arbre(s) : 0 / ${totalToBuild} `;
     this._counterText.style.position = "absolute";
     this._counterText.style.top = "10px";
     this._counterText.style.left = "40%";
@@ -312,7 +312,7 @@ export class ThirdGamePartScene extends Scene {
           this.game.fadeIn(
             this.sceneManager.changeScene.bind(
               this.sceneManager,
-              "second_step_completion"
+              "third_step_completion"
             )
           );
         }

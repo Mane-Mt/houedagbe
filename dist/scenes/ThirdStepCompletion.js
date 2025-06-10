@@ -22,7 +22,7 @@ export class ThirdStepCompletion extends Scene {
         this._wrapperDiv.className = "success-background";
         this._wrapperDiv.innerHTML = `
             <div id="container" class="container hint text-center">
-                <img src="public/img/emojie-smile.png" alt="Personnage" height="150" />
+                <img src="public/img/reward.png" alt="Personnage" height="150" />
                 <br/>
                 <br/>
                 <div id="text-content">

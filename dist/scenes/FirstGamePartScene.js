@@ -197,7 +197,6 @@ export class FirstGamePartScene extends Scene {
         new BABYLON.Vector3(-25, 0, -10),
         new BABYLON.Vector3(18, 0, 10),
         new BABYLON.Vector3(-16, 0, 17),
-        new BABYLON.Vector3(5, 0, -14),
 
       ];
 
