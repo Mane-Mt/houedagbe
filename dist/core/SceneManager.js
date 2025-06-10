@@ -61,7 +61,7 @@ export class SceneManager {
             case "second_step_hint":
             return new SecondStepHint();
                 case "third_game_part":       
-            return new ThirdGamePartScenea();
+            return new ThirdGamePartScene();
             case "third_step_completion":       
                 return new ThirdStepCompletion();
             case "third_step_hint":

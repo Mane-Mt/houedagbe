@@ -87,7 +87,7 @@ export class ThirdStepHint extends Scene {
                 // nextBtn.style.display = 'none';
                 this.game.fadeIn( this.sceneManager.changeScene.bind(
                 this.sceneManager,
-                "second_game_part"
+                "third_game_part"
               ));
             }
         });

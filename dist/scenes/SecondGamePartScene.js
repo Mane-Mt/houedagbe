@@ -80,6 +80,16 @@ export class SecondGamePartScene extends Scene {
         true,
         this.babylonScene
       );
+
+    this.babylonScene.onBeforeRenderObservable.add(() => {
+      const pos = this.mainCamera.position;
+      console.log(
+        `Camera position: x=${pos.x.toFixed(2)}, y=${pos.y.toFixed(
+          2
+        )}, z=${pos.z.toFixed(2)}`
+      );
+    });
+
     const leftPanel = new BABYLON.GUI.StackPanel();
     leftPanel.width = "70px";
     leftPanel.isVertical = true;
@@ -93,6 +103,8 @@ export class SecondGamePartScene extends Scene {
     advancedTexture.addControl(leftPanel);
     let isPlacingHome = false;
     let isPlacingTree = false;
+    let numberTree = 0;
+    let numberHome = 0;
     const optionBtns = ["home", "tree"].map((name, i) => {
       const btn = createIconButton(
         name,
@@ -104,20 +116,20 @@ export class SecondGamePartScene extends Scene {
             this._showBabylonAlert(
               advancedTexture,
               "Cliquez sur la scène pour placer une maison.",
-              (event) => {
-                event.preventDefault();
+              () => {
+
                 isPlacingHome = true;
+                numberHome++;
                 // Placer la maison
               }
             );
-          }
-          else if(name ==="tree"){
+          } else if (name === "tree") {
             this._showBabylonAlert(
               advancedTexture,
               "Cliquez sur la scène pour placer une maison.",
-              (event) => {
-                event.preventDefault();
+              () => {
                 isPlacingTree = true;
+                numberTree++;
                 // Placer la maison
               }
             );
@@ -187,7 +199,6 @@ export class SecondGamePartScene extends Scene {
       }
     );
     leftPanel.addControl(compassBtn);
-
     // 4. (optionnel) effets au survol
     [compassBtn, ...optionBtns].forEach((btn) => {
       btn.onPointerEnterObservable.add(
@@ -195,9 +206,6 @@ export class SecondGamePartScene extends Scene {
       );
       btn.onPointerOutObservable.add(() => (btn.background = "transparent"));
     });
-
-    // Vous pouvez aussi arrêter l’interaction de Babylon GUI sur les clics si la scène doit
-    // (par exemple) détecter des picking mesh simultanément. Dans ce cas, faites :
     advancedTexture.idealHeight = this.babylonScene
       .getEngine()
       .getRenderHeight();
@@ -208,8 +216,8 @@ export class SecondGamePartScene extends Scene {
     // Fonction pour créer un bouton
     function createIconButton(name, iconUrl, widthPx, heightPx, onClick) {
       const btn = BABYLON.GUI.Button.CreateImageOnlyButton(name, iconUrl);
-      btn.width = widthPx; // ex. "60px"
-      btn.height = heightPx; // ex. "60px"
+      btn.width = widthPx;
+      btn.height = heightPx;
 
       // coins arrondis et découpe de l'image pour un cercle parfait
       const w = parseInt(widthPx, 10);
@@ -225,6 +233,7 @@ export class SecondGamePartScene extends Scene {
       return btn;
     }
 
+    // Les évernements de cliques
     this.babylonScene.onPointerObservable.add((pointerInfo) => {
       if (
         isPlacingHome &&
@@ -239,7 +248,7 @@ export class SecondGamePartScene extends Scene {
           const point = pickResult.pickedPoint;
           const clone = homeMesh.clone("homeClone_" + Date.now());
           if (clone) {
-            clone.isVisible = true; 
+            clone.isVisible = true;
             clone.position = point;
             clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
             console.log("Arbre cloné à :", point);
@@ -247,12 +256,10 @@ export class SecondGamePartScene extends Scene {
 
           isPlacingHome = false;
         }
-      }
-
-      else if (
+      } else if (
         isPlacingTree &&
         pointerInfo.type === BABYLON.PointerEventTypes.POINTERPICK
-      ){
+      ) {
         const pickResult = this.babylonScene.pick(
           this.babylonScene.pointerX,
           this.babylonScene.pointerY
@@ -264,7 +271,7 @@ export class SecondGamePartScene extends Scene {
           if (clone) {
             clone.setEnabled(true);
             clone.position = point;
-            clone.scaling = new BABYLON.Vector3(0.088, 0.088, 0.088);
+            clone.scaling = new BABYLON.Vector3(0.0088, 0.0088, 0.0088);
             clone.position = point;
           }
 
@@ -273,30 +280,25 @@ export class SecondGamePartScene extends Scene {
       }
     });
 
-    // window.addEventListener("click", () => {
-    //   if (isPlacingHome && homeMesh) {
-    //     const pickResult = this.babylonScene.pick(
-    //       this.babylonScene.pointerX,
-    //       this.babylonScene.pointerY
-    //     );
-    //     console.log(pickResult)
-    //     if (pickResult.hit && homeMesh) {
-    //       const point = pickResult.pickedPoint;
-    //       // Cloner l'arbre
-    //       const clone = homeMesh.clone("treeClone_" + Date.now());
-    //       if (clone) {
-    //         clone.isVisible = true; // Afficher le clone
-    //         clone.position = point;
-    //         clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-    //         console.log("Arbre cloné à :", point);
-    //       }
-    //       isPlacingHome = false;
-    //     }
-    //   }
-    // });
+    // Permet de relancer le jeu
+    this.game.engine
+      .getRenderingCanvas()
+      .addEventListener("pointerdown", (evt) => {
+        const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
+        if (numberHome === 2 && numberTree === 2) {
+          this.game.fadeIn(
+            this.sceneManager.changeScene.bind(
+              this.sceneManager,
+              "second_step_completion"
+            )
+          );
+        }
+      });
   }
 
-  destroy() {}
+  destroy() {
+    super.destroy();
+  }
 
   _createGround(scene) {
     const ground = BABYLON.MeshBuilder.CreateGround(

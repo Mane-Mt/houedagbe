@@ -90,7 +90,7 @@ export class SecondStepCompletion extends Scene {
                 // nextBtn.style.display = 'none';
                 this.game.fadeIn( this.sceneManager.changeScene.bind(
                 this.sceneManager,
-                "second_step_hint"
+                "third_step_hint"
               ));
             }
         });
