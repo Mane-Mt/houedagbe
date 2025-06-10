@@ -12,22 +12,22 @@ export class FirstGamePartScene extends Scene {
     this.game.engine.hideLoadingUI();
   }
   async start() {
-    let totDishes = 9.
-        let compteur = totDishes;
+    let totDishes = 9;
+    let compteur = totDishes;
 
     this._counterText = document.createElement("div");
-this._counterText.id = "garbage-counter";
-this._counterText.textContent = `Ordure(s) collectée(s) : 0 / ${totDishes}`;
-this._counterText.style.position = "absolute";
-this._counterText.style.top = "10px";
-this._counterText.style.left = "40%";
-this._counterText.style.color = "white";
-this._counterText.style.fontSize = "18px";
-this._counterText.style.padding = "8px";
-this._counterText.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-this._counterText.style.borderRadius = "5px";
-this._counterText.style.zIndex = "10";
-  document.body.appendChild(this._counterText);
+    this._counterText.id = "garbage-counter";
+    this._counterText.textContent = `Ordure(s) collectée(s) : 0 / ${totDishes}`;
+    this._counterText.style.position = "absolute";
+    this._counterText.style.top = "10px";
+    this._counterText.style.left = "40%";
+    this._counterText.style.color = "white";
+    this._counterText.style.fontSize = "18px";
+    this._counterText.style.padding = "8px";
+    this._counterText.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    this._counterText.style.borderRadius = "5px";
+    this._counterText.style.zIndex = "10";
+    document.body.appendChild(this._counterText);
 
     const light = new BABYLON.HemisphericLight(
       "lighsa",
@@ -74,7 +74,7 @@ this._counterText.style.zIndex = "10";
     // });
 
     //Création d'un nouveau personnage
-    this._createCharacter()
+    this._createCharacter();
 
     //Création du terrain de jeu
     this._createGround(this.babylonScene);
@@ -107,7 +107,7 @@ this._counterText.style.zIndex = "10";
     //   if (theKey === "arrowleft") camHorizontal = 0;
     //   if (theKey === "arrowright") camHorizontal = 0;
     // });
-    
+
     // let homeMesh = null;
     // BABYLON.SceneLoader.ImportMeshAsync(
     //   "",
@@ -141,23 +141,23 @@ this._counterText.style.zIndex = "10";
     //   });
 
     //Portail de l'évernement
-    BABYLON.SceneLoader.ImportMeshAsync(
-      "",
-      "public/",
-      "fence_and_gate_wood.glb",
-      this.babylonScene
-    ).then((result) => {
-      let fenceMesh = result.meshes[0];
-      fenceMesh.scaling = new BABYLON.Vector3(0.68, 0.68, 0.68);
-      fenceMesh.position = new BABYLON.Vector3(0, 0, -6);
-      fenceMesh.rotate(
-        BABYLON.Axis.Y,
-        BABYLON.Tools.ToRadians(-95),
-        BABYLON.Space.LOCAL
-      );
-    });
+    // BABYLON.SceneLoader.ImportMeshAsync(
+    //   "",
+    //   "public/",
+    //   "fence_and_gate_wood.glb",
+    //   this.babylonScene
+    // ).then((result) => {
+    //   let fenceMesh = result.meshes[0];
+    //   fenceMesh.scaling = new BABYLON.Vector3(0.68, 0.68, 0.68);
+    //   fenceMesh.position = new BABYLON.Vector3(0, 0, -6);
+    //   fenceMesh.rotate(
+    //     BABYLON.Axis.Y,
+    //     BABYLON.Tools.ToRadians(-95),
+    //     BABYLON.Space.LOCAL
+    //   );
+    // });
 
-
+    
     BABYLON.SceneLoader.ImportMeshAsync(
       "",
       "public/",
@@ -220,7 +220,8 @@ this._counterText.style.zIndex = "10";
             );
           }
         }
-      });
+      },
+    );
 
     this.babylonScene.registerAfterRender(() => {
       console.log(time);
@@ -228,8 +229,13 @@ this._counterText.style.zIndex = "10";
   }
   destroy() {
     super.destroy();
+    console.log("Bonjour le monde de codeur");
+    if (this.intervalId !== null) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
     // if (this._counterText) {
-      document.body.removeChild(this._counterText);
+    document.body.removeChild(this._counterText);
     // }
   }
 
@@ -341,18 +347,17 @@ this._counterText.style.zIndex = "10";
         .padStart(2, "0")}`;
     }
 
-    const intervalId = setInterval(() => {
+    this.intervalId = setInterval(() => {
       timeLeft--;
 
       if (timeLeft <= 0) {
         timeLeft = 0;
-        clearInterval(intervalId);
+        clearInterval(this.intervalId);
         timerText.text = "00:00";
         progressBar.width = 0;
-        this.game.fadeIn( this.sceneManager.changeScene.bind(
-                this.sceneManager,
-                "game_over"
-              ));
+        this.game.fadeIn(
+          this.sceneManager.changeScene.bind(this.sceneManager, "game_over")
+        );
         return;
       }
 
@@ -374,7 +379,7 @@ this._counterText.style.zIndex = "10";
     return button;
   }
 
-  _createCharacter(){
+  _createCharacter() {
     const walk = function (turn, dist) {
       this.turn = turn;
       this.dist = dist;
