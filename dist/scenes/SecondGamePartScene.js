@@ -49,34 +49,15 @@ export class SecondGamePartScene extends Scene {
     ).then((result) => {
       result.meshes.forEach((mesh) => {
         mesh.metadata = { isHome: true };
-        mesh.isVisible = false;
       });
       homeMesh = result.meshes[0];
-      homeMesh.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-      homeMesh.position = new BABYLON.Vector3(-6, 0, 0);
+      homeMesh.scaling = new BABYLON.Vector3(0, 0, 0);
+      homeMesh.position = new BABYLON.Vector3(-16, 222, 98);
       homeMesh.rotate(
         BABYLON.Axis.Y,
         BABYLON.Tools.ToRadians(-95),
         BABYLON.Space.LOCAL
       );
-    });
-
-    window.addEventListener("click", () => {
-      const pickResult = this.babylonScene.pick(
-        this.babylonScene.pointerX,
-        this.babylonScene.pointerY
-      );
-      if (pickResult.hit && homeMesh) {
-        const point = pickResult.pickedPoint;
-        // Cloner l'arbre
-        const clone = homeMesh.clone("treeClone_" + Date.now());
-        if (clone) {
-          clone.isVisible = true; // Afficher le clone
-          clone.position = point;
-          clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-          console.log("Arbre cloné à :", point);
-        }
-      }
     });
 
     //Création d'un nouveau personnage
@@ -110,12 +91,12 @@ export class SecondGamePartScene extends Scene {
     leftPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
     leftPanel.paddingRight = "10px";
     advancedTexture.addControl(leftPanel);
-    let isClick = false;
     let isPlacingHome = false;
+    let isPlacingTree = false;
     const optionBtns = ["home", "tree"].map((name, i) => {
       const btn = createIconButton(
         name,
-        'public/icons/'+name+'.png',
+        "public/icons/" + name + ".png",
         "40px",
         "40px",
         () => {
@@ -127,7 +108,17 @@ export class SecondGamePartScene extends Scene {
                 event.preventDefault();
                 isPlacingHome = true;
                 // Placer la maison
-                
+              }
+            );
+          }
+          else if(name ==="tree"){
+            this._showBabylonAlert(
+              advancedTexture,
+              "Cliquez sur la scène pour placer une maison.",
+              (event) => {
+                event.preventDefault();
+                isPlacingTree = true;
+                // Placer la maison
               }
             );
           }
@@ -234,26 +225,75 @@ export class SecondGamePartScene extends Scene {
       return btn;
     }
 
-    window.addEventListener("click", () => {
-      if (isPlacingHome && homeMesh) {
+    this.babylonScene.onPointerObservable.add((pointerInfo) => {
+      if (
+        isPlacingHome &&
+        pointerInfo.type === BABYLON.PointerEventTypes.POINTERPICK
+      ) {
         const pickResult = this.babylonScene.pick(
           this.babylonScene.pointerX,
           this.babylonScene.pointerY
         );
 
-        if (pickResult.hit && pickResult.pickedPoint) {
+        if (pickResult.hit && homeMesh) {
           const point = pickResult.pickedPoint;
           const clone = homeMesh.clone("homeClone_" + Date.now());
           if (clone) {
+            clone.isVisible = true; 
             clone.position = point;
             clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-            clone.setEnabled(true);
-            console.log("Maison placée à :", point);
+            console.log("Arbre cloné à :", point);
           }
+
           isPlacingHome = false;
         }
       }
+
+      else if (
+        isPlacingTree &&
+        pointerInfo.type === BABYLON.PointerEventTypes.POINTERPICK
+      ){
+        const pickResult = this.babylonScene.pick(
+          this.babylonScene.pointerX,
+          this.babylonScene.pointerY
+        );
+
+        if (pickResult.hit && originalTree) {
+          const point = pickResult.pickedPoint;
+          const clone = originalTree.clone("treeClone_" + Date.now());
+          if (clone) {
+            clone.setEnabled(true);
+            clone.position = point;
+            clone.scaling = new BABYLON.Vector3(0.088, 0.088, 0.088);
+            clone.position = point;
+          }
+
+          isPlacingTree = false;
+        }
+      }
     });
+
+    // window.addEventListener("click", () => {
+    //   if (isPlacingHome && homeMesh) {
+    //     const pickResult = this.babylonScene.pick(
+    //       this.babylonScene.pointerX,
+    //       this.babylonScene.pointerY
+    //     );
+    //     console.log(pickResult)
+    //     if (pickResult.hit && homeMesh) {
+    //       const point = pickResult.pickedPoint;
+    //       // Cloner l'arbre
+    //       const clone = homeMesh.clone("treeClone_" + Date.now());
+    //       if (clone) {
+    //         clone.isVisible = true; // Afficher le clone
+    //         clone.position = point;
+    //         clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+    //         console.log("Arbre cloné à :", point);
+    //       }
+    //       isPlacingHome = false;
+    //     }
+    //   }
+    // });
   }
 
   destroy() {}
