@@ -34,28 +34,50 @@ export class SecondGamePartScene extends Scene {
         meshes.forEach((mesh) => (mesh.parent = root));
         root.position = new BABYLON.Vector3(3, 0, 0);
         root.scaling = new BABYLON.Vector3(0.0018, 0.0018, 0.0018);
-        root.setEnabled(true);
+        root.setEnabled(false);
         originalTree = root;
       }
     );
 
-    // window.addEventListener("click", () => {
-    //   const pickResult = this.babylonScene.pick(
-    //     this.babylonScene.pointerX,
-    //     this.babylonScene.pointerY
-    //   );
-    //   if (pickResult.hit && originalTree) {
-    //     const point = pickResult.pickedPoint;
-    //     // Cloner l'arbre
-    //     const clone = originalTree.clone("treeClone_" + Date.now());
-    //     if (clone) {
-    //       clone.position = point;
-    //       clone.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
-    //       clone.setEnabled(true); // Afficher le clone
-    //       console.log("Arbre cloné à :", point);
-    //     }
-    //   }
-    // });
+    //Create  a home in the game
+    let homeMesh = null;
+    BABYLON.SceneLoader.ImportMeshAsync(
+      "",
+      "public/",
+      "tiny_home.glb",
+      this.babylonScene
+    ).then((result) => {
+      result.meshes.forEach((mesh) => {
+        mesh.metadata = { isHome: true };
+        mesh.isVisible = false;
+      });
+      homeMesh = result.meshes[0];
+      homeMesh.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+      homeMesh.position = new BABYLON.Vector3(-6, 0, 0);
+      homeMesh.rotate(
+        BABYLON.Axis.Y,
+        BABYLON.Tools.ToRadians(-95),
+        BABYLON.Space.LOCAL
+      );
+    });
+
+    window.addEventListener("click", () => {
+      const pickResult = this.babylonScene.pick(
+        this.babylonScene.pointerX,
+        this.babylonScene.pointerY
+      );
+      if (pickResult.hit && homeMesh) {
+        const point = pickResult.pickedPoint;
+        // Cloner l'arbre
+        const clone = homeMesh.clone("treeClone_" + Date.now());
+        if (clone) {
+          clone.isVisible = true; // Afficher le clone
+          clone.position = point;
+          clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+          console.log("Arbre cloné à :", point);
+        }
+      }
+    });
 
     //Création d'un nouveau personnage
     this._createCharacter();
@@ -78,7 +100,6 @@ export class SecondGamePartScene extends Scene {
         this.babylonScene
       );
     const leftPanel = new BABYLON.GUI.StackPanel();
-    let homeMesh = null;
     leftPanel.width = "60px";
     leftPanel.isVertical = true;
     leftPanel.color = "white";
@@ -91,40 +112,22 @@ export class SecondGamePartScene extends Scene {
     advancedTexture.addControl(leftPanel);
     let isClick = false;
     let isPlacingHome = false;
-    const optionBtns = ["opt1", "opt2"].map((name, i) => {
+    const optionBtns = ["home", "tree"].map((name, i) => {
       const btn = createIconButton(
         name,
-        `public/icons/parametres.png`,
+        'public/icons/'+name+'.png',
         "40px",
         "40px",
         () => {
-          if (name === "opt1") {
+          if (name === "home") {
             this._showBabylonAlert(
               advancedTexture,
               "Cliquez sur la scène pour placer une maison.",
               (event) => {
                 event.preventDefault();
-
-                BABYLON.SceneLoader.ImportMeshAsync(
-                  "",
-                  "public/",
-                  "tiny_home.glb",
-                  this.babylonScene
-                ).then((result) => {
-                  result.meshes.forEach((mesh) => {
-                    mesh.metadata = { isHome: true };
-                  });
-                  homeMesh = result.meshes[0];
-                  homeMesh.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
-                  homeMesh.position = new BABYLON.Vector3(-6, 0, 0);
-                  homeMesh.isVisible = false;
-                  homeMesh.rotate(
-                    BABYLON.Axis.Y,
-                    BABYLON.Tools.ToRadians(-95),
-                    BABYLON.Space.LOCAL
-                  );
-                  isPlacingHome = true;
-                });
+                isPlacingHome = true;
+                // Placer la maison
+                
               }
             );
           }
@@ -240,7 +243,6 @@ export class SecondGamePartScene extends Scene {
 
         if (pickResult.hit && pickResult.pickedPoint) {
           const point = pickResult.pickedPoint;
-
           const clone = homeMesh.clone("homeClone_" + Date.now());
           if (clone) {
             clone.position = point;

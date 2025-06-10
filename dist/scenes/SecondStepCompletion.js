@@ -5,8 +5,7 @@ export class SecondStepCompletion extends Scene {
         super("second_step_completion");
         this._canClick = true;
     }
-
-    preload() {
+    async preload() {
         return new Promise((resolve) => {
             console.log("SecondStepCompletion: Preloading assets...");
             setTimeout(() => {
