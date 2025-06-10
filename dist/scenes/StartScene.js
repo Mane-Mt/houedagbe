@@ -14,6 +14,11 @@ export class StartScene extends Scene {
         this._startText.textContent = "Commencer";
         this._startDiv.appendChild(this._startText);
 
+        this._startHint = document.createElement("p");
+        this._startHint.id = "start-hint";
+        this._startHint.textContent = "Appyer sur la touche ESPACE pour commencer ";
+        this._startDiv.appendChild(this._startHint);
+
         this._startText.addEventListener("click", () => {
             if (this._canClick) {
                 this._canClick = false;

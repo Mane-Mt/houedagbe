@@ -13,6 +13,22 @@ export class SecondGamePartScene extends Scene {
   }
 
   start() {
+    let totalToBuild = 2 ;
+    this._counterText = document.createElement("div");
+    this._counterText.id = "garbage-counter";
+    this._counterText.textContent = `Objectifs reconstruction => Maison(s) : 0 / ${totalToBuild}  |  Arbre(s) : 0 / ${totalToBuild} `;
+    this._counterText.style.position = "absolute";
+    this._counterText.style.top = "10px";
+    this._counterText.style.left = "40%";
+    this._counterText.style.color = "white";
+    this._counterText.style.fontSize = "18px";
+    this._counterText.style.padding = "8px";
+    this._counterText.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    this._counterText.style.borderRadius = "5px";
+    this._counterText.style.zIndex = "10";
+    document.body.appendChild(this._counterText);
+
+
     const light = new BABYLON.HemisphericLight(
       "lighsa",
       new BABYLON.Vector3(0, 10, 0),
@@ -91,10 +107,10 @@ export class SecondGamePartScene extends Scene {
     });
 
     const leftPanel = new BABYLON.GUI.StackPanel();
-    leftPanel.width = "70px";
+    leftPanel.width = "110px";
     leftPanel.isVertical = true;
     leftPanel.color = "white";
-    leftPanel.left = "20px";
+    leftPanel.left = "50px";
     leftPanel.isVertical = true;
     leftPanel.horizontalAlignment =
       BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -109,8 +125,8 @@ export class SecondGamePartScene extends Scene {
       const btn = createIconButton(
         name,
         "public/icons/" + name + ".png",
-        "60px",
-        "60px",
+        "90px",
+        "90px",
         () => {
           if (name === "home") {
             this._showBabylonAlert(
@@ -130,10 +146,10 @@ export class SecondGamePartScene extends Scene {
               () => {
                 isPlacingTree = true;
                 numberTree++;
-                // Placer la maison
               }
             );
           }
+          panelVisible = !panelVisible;
         }
       );
       btn.top = "10px";
@@ -150,8 +166,8 @@ export class SecondGamePartScene extends Scene {
     const compassBtn = createIconButton(
       "compassBtn",
       "public/icons/parametres.png",
-      "60px",
-      "60px",
+      "90px",
+      "90px",
       () => {
         panelVisible = !panelVisible;
         optionBtns.forEach((btn, i) => {
@@ -251,6 +267,8 @@ export class SecondGamePartScene extends Scene {
             clone.isVisible = true;
             clone.position = point;
             clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+            
+            this._counterText.textContent = `Objectifs reconstruction => Maison(s) : ${numberHome} / ${totalToBuild}  |  Arbre(s) :${numberTree} / ${totalToBuild} `;
             console.log("Arbre cloné à :", point);
           }
 
@@ -273,6 +291,8 @@ export class SecondGamePartScene extends Scene {
             clone.position = point;
             clone.scaling = new BABYLON.Vector3(0.0088, 0.0088, 0.0088);
             clone.position = point;
+            
+            this._counterText.textContent = `Objectifs reconstruction => Maison(s) : ${numberHome} / ${totalToBuild}  |  Arbre(s) :${numberTree} / ${totalToBuild} `;
           }
 
           isPlacingTree = false;
@@ -284,8 +304,11 @@ export class SecondGamePartScene extends Scene {
     this.game.engine
       .getRenderingCanvas()
       .addEventListener("pointerdown", (evt) => {
+      if(numberHome >= 2 && numberTree >= 2){
+
+      }
         const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
-        if (numberHome === 2 && numberTree === 2) {
+        if (numberHome >= totalToBuild && numberTree >= totalToBuild) {
           this.game.fadeIn(
             this.sceneManager.changeScene.bind(
               this.sceneManager,
@@ -298,6 +321,7 @@ export class SecondGamePartScene extends Scene {
 
   destroy() {
     super.destroy();
+     document.body.removeChild(this._counterText);
   }
 
   _createGround(scene) {

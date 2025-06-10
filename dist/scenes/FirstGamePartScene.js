@@ -12,7 +12,7 @@ export class FirstGamePartScene extends Scene {
     this.game.engine.hideLoadingUI();
   }
   async start() {
-    let totDishes = 9;
+    let totDishes = 20;
     let compteur = totDishes;
 
     this._counterText = document.createElement("div");
@@ -34,7 +34,7 @@ export class FirstGamePartScene extends Scene {
       new BABYLON.Vector3(0, 10, 0),
       this.babylonScene
     );
-    this.babylonScene.attachControl();
+    this.mainCamera.attachControl();
     //Création de l'avatar
     let time = this._createAvatar(this.babylonScene);
 
@@ -178,14 +178,27 @@ export class FirstGamePartScene extends Scene {
 
       // 👉 On stocke les positions où on veut les dupliquer
       const positions = [
-        new BABYLON.Vector3(2, 0, -4),
-        new BABYLON.Vector3(-2, 0, -3),
-        new BABYLON.Vector3(3, 0, -2),
-        new BABYLON.Vector3(-3, 0, -6),
-        new BABYLON.Vector3(1, 0, -1),
-        new BABYLON.Vector3(-1, 0, -5),
-        new BABYLON.Vector3(4, 0, -3),
-        new BABYLON.Vector3(-4, 0, -2),
+        new BABYLON.Vector3(10, 0, -10),
+        new BABYLON.Vector3(-12, 0, -6),
+        new BABYLON.Vector3(14, 0, -3),
+        new BABYLON.Vector3(-15, 0, -11),
+        new BABYLON.Vector3(8, 0, 2),
+        new BABYLON.Vector3(-10, 0, -16),
+        new BABYLON.Vector3(17, 0, -7),
+        new BABYLON.Vector3(-14, 0, 0),
+        new BABYLON.Vector3(20, 0, -15),
+        new BABYLON.Vector3(-18, 0, 5),
+        new BABYLON.Vector3(13, 0, 7),
+        new BABYLON.Vector3(-20, 0, -14),
+        new BABYLON.Vector3(6, 0, 12),
+        new BABYLON.Vector3(-7, 0, 15),
+        new BABYLON.Vector3(0, 0, 20),
+        new BABYLON.Vector3(22, 0, -13),
+        new BABYLON.Vector3(-25, 0, -10),
+        new BABYLON.Vector3(18, 0, 10),
+        new BABYLON.Vector3(-16, 0, 17),
+        new BABYLON.Vector3(5, 0, -14),
+
       ];
 
       // 🔁 Dupliquer 8 fois
@@ -208,7 +221,7 @@ export class FirstGamePartScene extends Scene {
           pickResult.pickedMesh.dispose();
           compteur--;
 
-          const cleaned = 9 - compteur;
+          const cleaned = totDishes - compteur;
           this._counterText.textContent = `Ordure(s) collectée(s) :  ${cleaned} / ${totDishes}`;
 
           if (compteur === 0) {

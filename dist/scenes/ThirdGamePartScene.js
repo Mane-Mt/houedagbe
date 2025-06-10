@@ -6,13 +6,29 @@ export class ThirdGamePartScene extends Scene {
     this._canClick = true;
   }
 
-  async preload() {
+ async preload() {
     this.game.engine.displayLoadingUI();
-    console.log("La 3è partie vient de commencer");
+    console.log("La deuxieme partie vient de commencer");
     this.game.engine.hideLoadingUI();
   }
 
   start() {
+    let totalToBuild = 2 ;
+    this._counterText = document.createElement("div");
+    this._counterText.id = "garbage-counter";
+    this._counterText.textContent = `Objectifs reconstruction => Maison(s) : 0 / ${totalToBuild}  |  Arbre(s) : 0 / ${totalToBuild} `;
+    this._counterText.style.position = "absolute";
+    this._counterText.style.top = "10px";
+    this._counterText.style.left = "40%";
+    this._counterText.style.color = "white";
+    this._counterText.style.fontSize = "18px";
+    this._counterText.style.padding = "8px";
+    this._counterText.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+    this._counterText.style.borderRadius = "5px";
+    this._counterText.style.zIndex = "10";
+    document.body.appendChild(this._counterText);
+
+
     const light = new BABYLON.HemisphericLight(
       "lighsa",
       new BABYLON.Vector3(0, 10, 0),
@@ -34,28 +50,31 @@ export class ThirdGamePartScene extends Scene {
         meshes.forEach((mesh) => (mesh.parent = root));
         root.position = new BABYLON.Vector3(3, 0, 0);
         root.scaling = new BABYLON.Vector3(0.0018, 0.0018, 0.0018);
-        root.setEnabled(true);
+        root.setEnabled(false);
         originalTree = root;
       }
     );
 
-    // window.addEventListener("click", () => {
-    //   const pickResult = this.babylonScene.pick(
-    //     this.babylonScene.pointerX,
-    //     this.babylonScene.pointerY
-    //   );
-    //   if (pickResult.hit && originalTree) {
-    //     const point = pickResult.pickedPoint;
-    //     // Cloner l'arbre
-    //     const clone = originalTree.clone("treeClone_" + Date.now());
-    //     if (clone) {
-    //       clone.position = point;
-    //       clone.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
-    //       clone.setEnabled(true); // Afficher le clone
-    //       console.log("Arbre cloné à :", point);
-    //     }
-    //   }
-    // });
+    //Create  a home in the game
+    let homeMesh = null;
+    BABYLON.SceneLoader.ImportMeshAsync(
+      "",
+      "public/",
+      "tiny_home.glb",
+      this.babylonScene
+    ).then((result) => {
+      result.meshes.forEach((mesh) => {
+        mesh.metadata = { isHome: true };
+      });
+      homeMesh = result.meshes[0];
+      homeMesh.scaling = new BABYLON.Vector3(0, 0, 0);
+      homeMesh.position = new BABYLON.Vector3(-16, 222, 98);
+      homeMesh.rotate(
+        BABYLON.Axis.Y,
+        BABYLON.Tools.ToRadians(-95),
+        BABYLON.Space.LOCAL
+      );
+    });
 
     //Création d'un nouveau personnage
     this._createCharacter();
@@ -71,98 +90,239 @@ export class ThirdGamePartScene extends Scene {
     this.mainCamera.parent = camaraContainer;
     this.mainCamera.setTarget(new BABYLON.Vector3(0, -10, 0));
 
-
-
-
-
-
-    // 1. Création de la GUI pleine-canvas
     const advancedTexture =
       BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI(
-        "UI", // identifiant quelconque
-        true, // True pour pointerActivable (enable pointer events)
-        this.babylonScene // votre scène Babylon.js
+        "UI",
+        true,
+        this.babylonScene
       );
 
-    // On crée un StackPanel vertical, aligné à gauche au milieu de l'écran
+    this.babylonScene.onBeforeRenderObservable.add(() => {
+      const pos = this.mainCamera.position;
+      console.log(
+        `Camera position: x=${pos.x.toFixed(2)}, y=${pos.y.toFixed(
+          2
+        )}, z=${pos.z.toFixed(2)}`
+      );
+    });
+
     const leftPanel = new BABYLON.GUI.StackPanel();
-    leftPanel.width = "60px"; // largeur fixe pour le panel
-    leftPanel.isVertical = true; // on empile verticalement
+    leftPanel.width = "110px";
+    leftPanel.isVertical = true;
+    leftPanel.color = "white";
+    leftPanel.left = "50px";
+    leftPanel.isVertical = true;
     leftPanel.horizontalAlignment =
       BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
-    leftPanel.verticalAlignment =
-      BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-    leftPanel.paddingRight = "10px"; // marge à droite
+    leftPanel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    leftPanel.paddingRight = "10px";
     advancedTexture.addControl(leftPanel);
+    let isPlacingHome = false;
+    let isPlacingTree = false;
+    let numberTree = 0;
+    let numberHome = 0;
+    const optionBtns = ["home", "tree"].map((name, i) => {
+      const btn = createIconButton(
+        name,
+        "public/icons/" + name + ".png",
+        "90px",
+        "90px",
+        () => {
+          if (name === "home") {
+            this._showBabylonAlert(
+              advancedTexture,
+              "Cliquez sur la scène pour placer une maison.",
+              () => {
 
-    function createIconButton(
-      name, 
-      iconUrl,
-      widthPx,
-      heightPx, 
-      onClick 
-    ) {
-      const btn = BABYLON.GUI.Button.CreateImageOnlyButton(name, iconUrl);
-      btn.width = widthPx;
-      btn.height = heightPx;
-      btn.paddingBottom = "10px"; // espacement entre les boutons
-      btn.onPointerUpObservable.add(onClick); // action au clic
+                isPlacingHome = true;
+                numberHome++;
+                // Placer la maison
+              }
+            );
+          } else if (name === "tree") {
+            this._showBabylonAlert(
+              advancedTexture,
+              "Cliquez sur la scène pour placer une maison.",
+              () => {
+                isPlacingTree = true;
+                numberTree++;
+              }
+            );
+          }
+          panelVisible = !panelVisible;
+        }
+      );
+      btn.top = "10px";
+      btn.alpha = 0;
+      btn.isVisible = false;
+      btn.scaleX = 1;
+      btn.scaleY = 1;
+      leftPanel.addControl(btn);
       return btn;
-    }
+    });
 
-
+    // 3. crée compassBtn et toggle l’apparition des optionBtns
+    let panelVisible = false;
     const compassBtn = createIconButton(
       "compassBtn",
-      "public/icons/compass.png",
-      "40px",
-      "40px",
+      "public/icons/parametres.png",
+      "90px",
+      "90px",
       () => {
-        console.log("Vous avez cliqué sur le compas !");
-        
+        panelVisible = !panelVisible;
+        optionBtns.forEach((btn, i) => {
+          btn.isVisible = true; // nécessaire pour animer
+          // animation alpha et scale (in/out)
+          const fromAlpha = panelVisible ? 0 : 1;
+          const toAlpha = panelVisible ? 1 : 0;
+          const fromScale = panelVisible ? 0.5 : 1;
+          const toScale = panelVisible ? 1 : 0.5;
+
+          const fade = new BABYLON.Animation(
+            `fade_${btn.name}`,
+            "alpha",
+            60,
+            BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+            BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT
+          );
+          fade.setKeys([
+            { frame: 0, value: fromAlpha },
+            { frame: 15, value: toAlpha },
+          ]);
+
+          const scaleX = fade.clone();
+          scaleX.targetProperty = "scaleX";
+          scaleX.setKeys([
+            { frame: 0, value: fromScale },
+            { frame: 15, value: toScale },
+          ]);
+          const scaleY = fade.clone();
+          scaleY.targetProperty = "scaleY";
+          scaleY.setKeys(scaleX.getKeys());
+
+          this.babylonScene.beginDirectAnimation(
+            btn,
+            [fade, scaleX, scaleY],
+            0,
+            15,
+            false,
+            1,
+            () => {
+              if (!panelVisible) btn.isVisible = false;
+            }
+          );
+        });
       }
     );
     leftPanel.addControl(compassBtn);
-
-    const view2DBtn = createIconButton(
-      "view2DBtn",
-      "public/icons/view2d.png",
-      "40px",
-      "40px",
-      () => {
-        console.log("Basculer en vue 2D");
-      }
-    );
-    leftPanel.addControl(view2DBtn);
-
-    const view3DBtn = createIconButton(
-      "view3DBtn",
-      "public/icons/view3d.png", 
-      "40px",
-      "40px",
-      () => {
-        console.log("Basculer en vue 3D");
-
-      }
-    );
-    leftPanel.addControl(view3DBtn);
-
-    // Par exemple, vous pouvez ajouter un effet au survol :
-    [compassBtn, view2DBtn, view3DBtn].forEach((btn) => {
+    // 4. (optionnel) effets au survol
+    [compassBtn, ...optionBtns].forEach((btn) => {
       btn.onPointerEnterObservable.add(
         () => (btn.background = "rgba(255,255,255,0.2)")
       );
       btn.onPointerOutObservable.add(() => (btn.background = "transparent"));
     });
-
-    // Vous pouvez aussi arrêter l’interaction de Babylon GUI sur les clics si la scène doit
-    // (par exemple) détecter des picking mesh simultanément. Dans ce cas, faites :
-    advancedTexture.idealHeight = this.babylonScene.getEngine().getRenderHeight();
+    advancedTexture.idealHeight = this.babylonScene
+      .getEngine()
+      .getRenderHeight();
     advancedTexture.idealWidth = this.babylonScene.getEngine().getRenderWidth();
     advancedTexture.ignorePointerDownOnEmptySpace = true;
     advancedTexture.ignorePointerUpOnEmptySpace = true;
+
+    // Fonction pour créer un bouton
+    function createIconButton(name, iconUrl, widthPx, heightPx, onClick) {
+      const btn = BABYLON.GUI.Button.CreateImageOnlyButton(name, iconUrl);
+      btn.width = widthPx;
+      btn.height = heightPx;
+
+      // coins arrondis et découpe de l'image pour un cercle parfait
+      const w = parseInt(widthPx, 10);
+      const h = parseInt(heightPx, 10);
+      btn.cornerRadius = Math.min(w, h) / 2;
+      btn.clipChildren = true;
+      btn.thickness = 0; // pas de bordure
+      btn.paddingBottom = "20px"; // espacement dans le panel
+      btn.onPointerUpObservable.add((evt, state) => {
+        evt.preventDefault?.();
+        onClick(evt, state);
+      });
+      return btn;
+    }
+
+    // Les évernements de cliques
+    this.babylonScene.onPointerObservable.add((pointerInfo) => {
+      if (
+        isPlacingHome &&
+        pointerInfo.type === BABYLON.PointerEventTypes.POINTERPICK
+      ) {
+        const pickResult = this.babylonScene.pick(
+          this.babylonScene.pointerX,
+          this.babylonScene.pointerY
+        );
+
+        if (pickResult.hit && homeMesh) {
+          const point = pickResult.pickedPoint;
+          const clone = homeMesh.clone("homeClone_" + Date.now());
+          if (clone) {
+            clone.isVisible = true;
+            clone.position = point;
+            clone.scaling = new BABYLON.Vector3(0.38, 0.8, 0.38);
+            
+            this._counterText.textContent = `Objectifs reconstruction => Maison(s) : ${numberHome} / ${totalToBuild}  |  Arbre(s) :${numberTree} / ${totalToBuild} `;
+            console.log("Arbre cloné à :", point);
+          }
+
+          isPlacingHome = false;
+        }
+      } else if (
+        isPlacingTree &&
+        pointerInfo.type === BABYLON.PointerEventTypes.POINTERPICK
+      ) {
+        const pickResult = this.babylonScene.pick(
+          this.babylonScene.pointerX,
+          this.babylonScene.pointerY
+        );
+
+        if (pickResult.hit && originalTree) {
+          const point = pickResult.pickedPoint;
+          const clone = originalTree.clone("treeClone_" + Date.now());
+          if (clone) {
+            clone.setEnabled(true);
+            clone.position = point;
+            clone.scaling = new BABYLON.Vector3(0.0088, 0.0088, 0.0088);
+            clone.position = point;
+            
+            this._counterText.textContent = `Objectifs reconstruction => Maison(s) : ${numberHome} / ${totalToBuild}  |  Arbre(s) :${numberTree} / ${totalToBuild} `;
+          }
+
+          isPlacingTree = false;
+        }
+      }
+    });
+
+    // Permet de relancer le jeu
+    this.game.engine
+      .getRenderingCanvas()
+      .addEventListener("pointerdown", (evt) => {
+      if(numberHome >= 2 && numberTree >= 2){
+
+      }
+        const pickResult = this.babylonScene.pick(evt.clientX, evt.clientY);
+        if (numberHome >= totalToBuild && numberTree >= totalToBuild) {
+          this.game.fadeIn(
+            this.sceneManager.changeScene.bind(
+              this.sceneManager,
+              "second_step_completion"
+            )
+          );
+        }
+      });
   }
 
-  destroy() {}
+  destroy() {
+    super.destroy();
+     document.body.removeChild(this._counterText);
+  }
 
   _createGround(scene) {
     const ground = BABYLON.MeshBuilder.CreateGround(
@@ -253,7 +413,7 @@ export class ThirdGamePartScene extends Scene {
   _createButton(label, onClick) {
     const button = BABYLON.GUI.Button.CreateSimpleButton(label, label);
     button.width = "120px";
-    button.height = "40px";
+    button.height = "60px";
     button.color = "white";
     button.cornerRadius = 10;
     button.background = "#444";
@@ -319,5 +479,79 @@ export class ThirdGamePartScene extends Scene {
         }
       });
     });
+  }
+
+  _showBabylonAlert(advancedTexture, message, onClose = (event) => {}) {
+    // Overlay flouté
+    const overlay = new BABYLON.GUI.Rectangle();
+    overlay.width = 1;
+    overlay.height = 1;
+    overlay.background = "rgba(0,0,0,0.5)";
+    overlay.thickness = 0;
+    overlay.zIndex = 10;
+    advancedTexture.addControl(overlay);
+
+    // Fenêtre de dialogue
+    const dialog = new BABYLON.GUI.Rectangle("alertBox");
+    dialog.width = "300px";
+    dialog.height = "160px";
+    dialog.cornerRadius = 15;
+    dialog.color = "#0078D4";
+    dialog.thickness = 2;
+    dialog.background = "white";
+    dialog.zIndex = 11;
+    overlay.addControl(dialog);
+
+    // Message texte
+    const msgText = new BABYLON.GUI.TextBlock();
+    msgText.text = message;
+    msgText.color = "black";
+    msgText.fontSize = 18;
+    msgText.textWrapping = true;
+    msgText.textHorizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+    msgText.textVerticalAlignment =
+      BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+    msgText.paddingTop = "10px";
+    msgText.height = "60%";
+    dialog.addControl(msgText);
+
+    // Bouton OK
+    const okBtn = BABYLON.GUI.Button.CreateSimpleButton("okBtn", "OK");
+    okBtn.width = "80px";
+    okBtn.height = "30px";
+    okBtn.color = "white";
+    okBtn.background = "#0078D4";
+    okBtn.cornerRadius = 10;
+    okBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+    okBtn.top = "-10px";
+
+    okBtn.onPointerUpObservable.add(() => {
+      overlay.dispose();
+
+      onClose(event);
+    });
+
+    dialog.addControl(okBtn);
+
+    // Bouton X (fermer)
+    const closeBtn = BABYLON.GUI.Button.CreateSimpleButton("closeBtn", "✕");
+    closeBtn.width = "30px";
+    closeBtn.height = "30px";
+    closeBtn.color = "white";
+    closeBtn.background = "red";
+    closeBtn.cornerRadius = 15;
+    closeBtn.horizontalAlignment =
+      BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    closeBtn.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+    closeBtn.top = "5px";
+    closeBtn.left = "-5px";
+
+    closeBtn.onPointerUpObservable.add(() => {
+      overlay.dispose();
+      onClose();
+    });
+
+    dialog.addControl(closeBtn);
   }
 }

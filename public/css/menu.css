@@ -29,19 +29,35 @@
 
 #start-text {
     position: absolute;
-    top: 70%;
+    top: 65%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 2.5vw;
-    color: #276e69;
+    color: #0b312f;
     font-weight: bolder;
     white-space: pre-line;
     text-shadow: black 1px 1px 1px;
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
+    cursor: pointer !important;
 }
+
+#start-hint {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5vw;
+    color: #000;
+    font-weight: bolder;
+    white-space: pre-line;
+    /* text-shadow: black 1px 1px 1px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 
 .top-title {
     position: absolute;
