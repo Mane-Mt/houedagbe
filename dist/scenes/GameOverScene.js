@@ -19,8 +19,9 @@ export class GameOverScene extends Scene {
     start() {
         this._wrapperDiv = document.createElement("div");
         this._wrapperDiv.id = "wrapper";
+        this._wrapperDiv.className = "game-over-background";
         this._wrapperDiv.innerHTML = `
-            // <button id="skip-btn">Skip</button>
+           
             <div id="container" class="container hint text-center">
               
                     <img src="public/img/emojie-game-over.gif" height="180" alt="Personnage" />

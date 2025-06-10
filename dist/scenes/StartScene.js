@@ -30,7 +30,7 @@ export class StartScene extends Scene {
         super.update();
         window.addEventListener("keydown", (event) => {
             if (event.code === "Space" && this._canClick) {
-                // this._canClick = false;
+                this._canClick = false;
                 this._tryToConnectToServer();
             }
         });

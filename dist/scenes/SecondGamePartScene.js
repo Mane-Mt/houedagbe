@@ -81,10 +81,10 @@ export class SecondGamePartScene extends Scene {
         this.babylonScene
       );
     const leftPanel = new BABYLON.GUI.StackPanel();
-    leftPanel.width = "60px";
+    leftPanel.width = "70px";
     leftPanel.isVertical = true;
     leftPanel.color = "white";
-    leftPanel.left = "10px";
+    leftPanel.left = "20px";
     leftPanel.isVertical = true;
     leftPanel.horizontalAlignment =
       BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -97,8 +97,8 @@ export class SecondGamePartScene extends Scene {
       const btn = createIconButton(
         name,
         "public/icons/" + name + ".png",
-        "40px",
-        "40px",
+        "60px",
+        "60px",
         () => {
           if (name === "home") {
             this._showBabylonAlert(
@@ -138,8 +138,8 @@ export class SecondGamePartScene extends Scene {
     const compassBtn = createIconButton(
       "compassBtn",
       "public/icons/parametres.png",
-      "40px",
-      "40px",
+      "60px",
+      "60px",
       () => {
         panelVisible = !panelVisible;
         optionBtns.forEach((btn, i) => {
@@ -208,8 +208,8 @@ export class SecondGamePartScene extends Scene {
     // Fonction pour créer un bouton
     function createIconButton(name, iconUrl, widthPx, heightPx, onClick) {
       const btn = BABYLON.GUI.Button.CreateImageOnlyButton(name, iconUrl);
-      btn.width = widthPx; // ex. "40px"
-      btn.height = heightPx; // ex. "40px"
+      btn.width = widthPx; // ex. "60px"
+      btn.height = heightPx; // ex. "60px"
 
       // coins arrondis et découpe de l'image pour un cercle parfait
       const w = parseInt(widthPx, 10);
@@ -387,7 +387,7 @@ export class SecondGamePartScene extends Scene {
   _createButton(label, onClick) {
     const button = BABYLON.GUI.Button.CreateSimpleButton(label, label);
     button.width = "120px";
-    button.height = "40px";
+    button.height = "60px";
     button.color = "white";
     button.cornerRadius = 10;
     button.background = "#444";
