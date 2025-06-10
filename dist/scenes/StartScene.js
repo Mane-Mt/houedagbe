@@ -8,10 +8,19 @@ export class StartScene extends Scene {
         this._startDiv = document.createElement("div");
         this._startDiv.className = "menu-background";
         this.game.uiContainer.appendChild(this._startDiv);
+
         this._startText = document.createElement("p");
         this._startText.id = "start-text";
         this._startText.textContent = "Commencer";
         this._startDiv.appendChild(this._startText);
+
+        this._startText.addEventListener("click", () => {
+            if (this._canClick) {
+                this._canClick = false;
+                this._tryToConnectToServer();
+            }
+        });
+
         const icon = document.createElement("img");
         icon.id = "big-icon";
         icon.src = "public/img/houedagbeLogo.png";
@@ -21,7 +30,7 @@ export class StartScene extends Scene {
         super.update();
         window.addEventListener("keydown", (event) => {
             if (event.code === "Space" && this._canClick) {
-                this._canClick = false;
+                // this._canClick = false;
                 this._tryToConnectToServer();
             }
         });

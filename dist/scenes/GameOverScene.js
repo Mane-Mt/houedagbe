@@ -85,7 +85,7 @@ export class GameOverScene extends Scene {
             } else {
                 // container.textContent += "\n\n➤ Fin de l’introduction.";
                 // nextBtn.style.display = 'none';
-                this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "menu_scene"));
+                this.game.fadeIn(this.sceneManager.changeScene.bind(this.sceneManager, "menu"));
             }
         });
 

@@ -91,7 +91,7 @@ export class ThirdStepCompletion extends Scene {
                 // nextBtn.style.display = 'none';
                 this.game.fadeIn( this.sceneManager.changeScene.bind(
                 this.sceneManager,
-                "menu_scene"
+                "menu"
               ));
             }
         });
